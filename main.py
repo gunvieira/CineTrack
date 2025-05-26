@@ -8,24 +8,15 @@ class CineTrackApp:
         self.root.title("Cine Track")
         self.menu()
 
-
         container = ttk.Frame(self.root, padding=20)
         container.pack(expand=True, fill="both", padx=40, pady=30)
 
-
-
-        # Botões
-        ttk.Button(container, text="Adicionar Novo Título", bootstyle="secondary", width=30).pack(pady=10)
-        ttk.Button(container, text="Atualize seu Progresso", bootstyle="secondary", width=30).pack(pady=10)
-        ttk.Button(container, text="Visão Geral", bootstyle="secondary", width=30).pack(pady=10)
-
-        # Citação
-        ttk.Label(container, text='"Your imagination can create a reality."', font=("Segoe UI", 10, "italic")).pack(pady=(40, 0))
-        ttk.Label(container, text="James Cameron", font=("Segoe UI", 9, "italic")).pack()
-
+    #MENU
     def menu(self):
         self.root.geometry("400x450")
         self.titulo()
+        self.botoesMenu()
+        self.citacao()
 
 
     def titulo(self):
@@ -37,6 +28,35 @@ class CineTrackApp:
 
         labelCineTrack = ttk.Label(container, text="CineTrack", font=("Helvetica", 34, "bold"))
         labelCineTrack.pack(anchor='w')
+
+    def botoesMenu(self):
+        container = tk.Frame(self.root)
+        container.pack()
+
+        btnNovoTitulo = ttk.Button(container, text="Adicionar Novo Título", bootstyle="secondary", takefocus=False, width=30)
+        btnNovoTitulo.pack(pady=10)
+
+        btn = tk.Button(container,
+                        text="Adicionar Novo Título",
+                        font=("Helvetica", 15, "bold"),
+                        width=16,
+                        takefocus=False)
+        btn.pack(pady=10)
+
+        ttk.Button(container, text="Atualize seu Progresso", bootstyle="secondary", takefocus=False, width=30).pack(
+            pady=10)
+        ttk.Button(container, text="Visão Geral", bootstyle="secondary", takefocus=False, width=30).pack(pady=10)
+
+    def citacao(self):
+        container = tk.Frame(self.root)
+        container.pack()
+
+        ttk.Label(container, text='"Your imagination can create a reality."', font=("Segoe UI", 10, "italic")).pack(
+            pady=(20, 0))
+        ttk.Label(container, text="James Cameron", font=("Segoe UI", 9, "italic")).pack()
+
+#custom tkinter
+        #MENU
 
     class View():
         def __init__(self):
