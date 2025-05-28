@@ -10,46 +10,60 @@ class View:
         self.root = ctk.CTk()
 
 
+        self.root.title("Cine Track")
+
+        self.container = ctk.CTkFrame(self.root)
+        self.container.pack(fill="both", expand=True)
+
+        self.frameMenu = ctk.CTkFrame(self.container, fg_color="transparent")
+        self.frameAdicionar = ctk.CTkFrame(self.container, fg_color="transparent")
+
+        self.frameMenu.grid(row=0, column=0, sticky="nsew", padx=50, pady=50)
+        self.frameAdicionar.grid(row=0, column=0, sticky="nsew", padx=50, pady=50)
 
         self.telaMenu()
+        self.telaAdicionar()
 
-        self.root.title("Cine Track")
+        self.showTelamenu()
+
         self.root.mainloop()
 
+    def showTelamenu(self):
+
+        self.frameMenu.tkraise()
+
+    def showAdicionar(self):
+
+        self.frameAdicionar.tkraise()
 
 
-    # MENU
-    #alterar para o tkraise
+    # ---------------MENU--------------------
+
     def telaMenu(self):
-        for widget in self.root.winfo_children():  # Limpa a tela anterior
-            widget.destroy()
-
-        self.root.geometry("500x500")
         self.tituloMenu()
         self.botoesMenu()
         self.citacao()
 
     def tituloMenu(self):
-        self.frameMenu = ctk.CTkFrame(self.root, fg_color="transparent")
-        self.frameMenu.pack(pady=(30, 0))
+        self.frameBemvindo = ctk.CTkFrame(self.frameMenu, fg_color="transparent")
+        self.frameBemvindo.pack(pady=3)
 
-
-        labelBemvindo = ctk.CTkLabel(self.frameMenu,
+        labelBemvindo = ctk.CTkLabel(self.frameBemvindo,
                                      text="Bem vindo ao",
                                      font=ctk.CTkFont("Inter", 24),
                                      text_color="#747474")
-        labelBemvindo.pack(anchor='w')
+        labelBemvindo.pack(anchor="w", padx=3)
 
-        labelCineTrack = ctk.CTkLabel(self.frameMenu,
+        labelCineTrack = ctk.CTkLabel(self.frameBemvindo,
                                       text="CineTrack",
                                       font=ctk.CTkFont("Inter", 64, weight="bold"))
-        labelCineTrack.pack(anchor='w')
+        labelCineTrack.pack(anchor="w")
 
     def botoesMenu(self):
-        self.frameMenu = ctk.CTkFrame(self.root, fg_color="transparent")
-        self.frameMenu.pack(pady=10)
+        self.frameBotoesMenu = ctk.CTkFrame(self.frameMenu, fg_color="transparent")
+        self.frameBotoesMenu.pack(pady=3)
 
-        btnNovoTitulo = ctk.CTkButton(self.frameMenu,
+        btnNovoTitulo = ctk.CTkButton(self.frameBotoesMenu,
                                       text="Adicionar Novo Título",
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
@@ -58,10 +72,10 @@ class View:
                                       fg_color="#C7C7D7",
                                       hover_color="#BDBDC9",
                                       cursor="hand2",
-                                      command=self.telaAdicionar)
+                                      command=self.showAdicionar)
         btnNovoTitulo.pack(pady=10)
 
-        btnAtualize = ctk.CTkButton(self.frameMenu,
+        btnAtualize = ctk.CTkButton(self.frameBotoesMenu,
                                       text="Atualize seu Progresso",
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
@@ -72,7 +86,7 @@ class View:
                                       cursor="hand2")
         btnAtualize.pack(pady=10)
 
-        btnGeral = ctk.CTkButton(self.frameMenu,
+        btnGeral = ctk.CTkButton(self.frameBotoesMenu,
                                       text="Visão Geral",
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
@@ -83,47 +97,51 @@ class View:
                                       cursor="hand2")
         btnGeral.pack(pady=10)
 
-
     def citacao(self):
-        self.frameMenu = ctk.CTkFrame(self.root, fg_color="transparent")
-        self.frameMenu.pack()
+        self.frameCitacao = ctk.CTkFrame(self.frameMenu, fg_color="transparent")
+        self.frameCitacao.pack(pady=10)
 
-        labelCitacao = ctk.CTkLabel(self.frameMenu,
+        labelCitacao = ctk.CTkLabel(self.frameCitacao,
                                     text='"Your imagination can create a reality."',
                                     font=ctk.CTkFont("Segoe UI", 15, slant="italic"))
-        labelCitacao.pack(pady=(0, 0))
+        labelCitacao.pack()
 
-        labelAutorCitacao = ctk.CTkLabel(self.frameMenu,
+        labelAutorCitacao = ctk.CTkLabel(self.frameCitacao,
                                          text="James Cameron",
                                          font=ctk.CTkFont("Segoe UI", 12, slant="italic"))
-        labelAutorCitacao.pack(pady=0, anchor='e')
+        labelAutorCitacao.pack(anchor='e')
 
-
-
-        #MENU
+        # ---------------MENU--------------------
 
     def telaAdicionar(self):
-        for widget in self.root.winfo_children():  # Limpa a tela anterior
-            widget.destroy()
 
-        self.root.geometry("500x600")
+
         self.tituloAdicionar()
         self.botoes()
 
+
     def tituloAdicionar(self):
 
-        self.frameAdicionar = ctk.CTkFrame(self.root, fg_color="transparent")
-        self.frameAdicionar.pack()
-
         titulo = ctk.CTkLabel(self.frameAdicionar, text="Adicionar Novo Título", font=ctk.CTkFont(size=22, weight="bold"))
-        titulo.pack(pady=(20, 10))
+        titulo.pack()
 
-    def voltarMenu(self):
-        # Destruir a tela de adicionar título e voltar para a tela de menu
-        self.frameAdicionar.destroy()
-        self.telaMenu()
 
-    def botoesAdicionar(self):
+
+    def botoes(self):
+
+
+        voltar_btn = ctk.CTkButton(self.frameAdicionar, text="Voltar", command=self.showTelamenu)
+        voltar_btn.pack(side="left", padx=10)
+
+        limpar_btn = ctk.CTkButton(self.frameAdicionar, text="Limpar", command=lambda: print("Limpar"))
+        limpar_btn.pack(side="left", padx=10)
+
+        salvar_btn = ctk.CTkButton(self.frameAdicionar, text="Salvar", command=lambda: print("Salvar"))
+        salvar_btn.pack(side="left", padx=10)
+
+
+"""
+     def botoesAdicionar(self):
         # Tipo (Filme ou Série)
         tipo_frame = ctk.CTkFrame(janela, fg_color="transparent")
         tipo_frame.pack(fill="x", padx=20)
@@ -205,22 +223,10 @@ class View:
         spinbox = tk.Spinbox(janela, from_=1, to=10, textvariable=spin_var, width=10, font=("Arial", 14))
         spinbox.pack()
 
+"""
 
-    def botoes(self):
-        self.frameAdicionar = ctk.CTkFrame(self.root, fg_color="transparent")
-        self.frameAdicionar.pack()
-        # Botões
-        botoes_frame = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        botoes_frame.pack(pady=20)
 
-        voltar_btn = ctk.CTkButton(self.frameAdicionar, text="Voltar", command=self.voltarMenu)
-        voltar_btn.pack(side="left", padx=10)
 
-        limpar_btn = ctk.CTkButton(self.frameAdicionar, text="Limpar", command=lambda: print("Limpar"))
-        limpar_btn.pack(side="left", padx=10)
-
-        salvar_btn = ctk.CTkButton(self.frameAdicionar, text="Salvar", command=lambda: print("Salvar"))
-        salvar_btn.pack(side="left", padx=10)
 
 if __name__ == "__main__":
     View()
