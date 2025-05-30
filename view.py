@@ -121,6 +121,7 @@ class View:
         self.tituloAdicionar()
         self.radioTipoAdicionar()
         self.inputAdicionar()
+        self.botoes()
 
 
 
@@ -175,15 +176,17 @@ class View:
         radioSerie.pack(side="left")
 
     def botoes(self):
+        frameBotoesAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameBotoesAdicionar.pack(anchor='w', pady=(10,0))
 
 
-        voltar_btn = ctk.CTkButton(self.frameAdicionar, text="Voltar", command=self.showTelamenu)
+        voltar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Voltar", command=self.showTelamenu, width=30)
         voltar_btn.pack(side="left", padx=10)
 
-        limpar_btn = ctk.CTkButton(self.frameAdicionar, text="Limpar", command=lambda: print("Limpar"))
+        limpar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Limpar", width=30, command=lambda: print("Limpar"))
         limpar_btn.pack(side="left", padx=10)
 
-        salvar_btn = ctk.CTkButton(self.frameAdicionar, text="Salvar", command=lambda: print("Salvar"))
+        salvar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Salvar", width=30, command=lambda: print("Salvar"))
         salvar_btn.pack(side="left", padx=10)
 
     def inputAdicionar(self):
@@ -349,7 +352,7 @@ class View:
                                       fg_color="#414141",
                                       hover_color="#6F6F83",
                                       border_color="grey",
-                                      font=ctk.CTkFont("Inter", 15),
+                                      font=ctk.CTkFont("Inter", 12),
                                       value="Quero Assistir")
         btnQuero.pack(side="left", padx=5)
 
@@ -363,7 +366,7 @@ class View:
                                       fg_color="#414141",
                                       hover_color="#6F6F83",
                                       border_color="grey",
-                                      font=ctk.CTkFont("Inter", 15),
+                                      font=ctk.CTkFont("Inter", 12),
                                       value="Assistindo")
         btnAssis.pack(side="left", padx=5)
 
@@ -377,21 +380,37 @@ class View:
                                      fg_color="#414141",
                                      hover_color="#6F6F83",
                                      border_color="grey",
-                                     font=ctk.CTkFont("Inter", 15),
+                                     font=ctk.CTkFont("Inter", 12),
                                      value="Concluído")
-        btnConc.pack(side="left", padx=5)
-        """
+        btnConc.pack(side="left")
+
         # Avaliação
-        nota_label = ctk.CTkLabel(janela, text="Avalie esse título!")
-        nota_label.pack(anchor="w", padx=20, pady=(10, 0))
-        nota_menu = ctk.CTkOptionMenu(janela, values=[str(i) for i in range(1, 11)])
-        nota_menu.pack(fill="x", padx=20)
+        frameNota = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
+        frameNota.pack(pady=(10, 0), anchor="w")
 
-        spin_var = tk.StringVar(value="1")
-        spinbox = tk.Spinbox(janela, from_=1, to=10, textvariable=spin_var, width=10, font=("Arial", 14))
-        spinbox.pack()
+        nota_label = ctk.CTkLabel(frameNota,
+                                  text="Avalie esse título",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  )
+        nota_label.pack(anchor="w")
 
-"""
+        spin_var = tk.IntVar(value=1)
+
+        # Cria o widget Spinbox
+        spinbox = tk.Spinbox(
+            frameNota,
+            from_=1,
+            to=10,
+            textvariable=spin_var,
+            width=2,
+            font=("Inter", 12),
+            justify="center",
+            relief="groove"
+
+        )
+        spinbox.pack(anchor="w")
+
+
 
 
 
