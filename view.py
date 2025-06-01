@@ -68,9 +68,9 @@ class View:
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
                                       height=50,
-                                      text_color="#000000",
-                                      fg_color="#C7C7D7",
-                                      hover_color="#BDBDC9",
+                                      text_color="black",
+                                      fg_color="grey",
+                                      hover_color="#9A9A9A",
                                       cursor="hand2",
                                       command=self.showTelaAdicionar)
         btnNovoTitulo.pack(pady=10)
@@ -80,9 +80,9 @@ class View:
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
                                       height=50,
-                                      text_color="#000000",
-                                      fg_color="#C7C7D7",
-                                      hover_color="#BDBDC9",
+                                      text_color="black",
+                                      fg_color="grey",
+                                      hover_color="#9A9A9A",
                                       cursor="hand2")
         btnAtualize.pack(pady=10)
 
@@ -91,9 +91,9 @@ class View:
                                       font=ctk.CTkFont("Inter", 20),
                                       width=300,
                                       height=50,
-                                      text_color="#000000",
-                                      fg_color="#C7C7D7",
-                                      hover_color="#BDBDC9",
+                                      text_color="black",
+                                      fg_color="grey",
+                                      hover_color="#9A9A9A",
                                       cursor="hand2")
         btnGeral.pack(pady=10)
 
@@ -115,20 +115,21 @@ class View:
 
         # ---------------Adicionar novo titulo--------------------
 
+    # ---------------Adicionar Novo Título--------------------
+
     def telaAdicionar(self):
-
-
         self.tituloAdicionar()
         self.radioTipoAdicionar()
-        self.inputAdicionar()
-        self.botoes()
-
-
-
+        self.nomeGeneroAdicionar()
+        self.anoStreamingAdicionar()
+        self.tempEpiAdicionar()
+        self.statusAdicionar()
+        self.spinAdicionar()
+        self.botoesAdicionar()
 
     def tituloAdicionar(self):
         self.frameTituloAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        self.frameTituloAdicionar.pack(pady=10, anchor='w')
+        self.frameTituloAdicionar.pack(pady=(5,10), anchor='w')
 
         titulo = ctk.CTkLabel(self.frameTituloAdicionar,
                               text="Adicionar Novo Título",
@@ -136,20 +137,20 @@ class View:
         titulo.pack(anchor='e')
 
     def radioTipoAdicionar(self):
-        self.frameRadioTipo = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        self.frameRadioTipo.pack(pady=5, anchor='w')
+        frameRadioTipo = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameRadioTipo.pack(pady=(5,10), anchor='w')
 
-        tipo_label = ctk.CTkLabel(self.frameRadioTipo,
+        tipo_label = ctk.CTkLabel(frameRadioTipo,
                                   text="O que deseja adicionar:",
                                   font=ctk.CTkFont("Inter", 16))
 
-        tipo_label.pack(anchor="w", pady=(0,6))
+        tipo_label.pack(anchor="w")
 
-        tipoVar = ctk.StringVar(value="Filme")
+        self.tipoAdicionarVar = ctk.StringVar(value="Filme")
 
-        radioFilme = ctk.CTkRadioButton(self.frameRadioTipo,
+        radioFilme = ctk.CTkRadioButton(frameRadioTipo,
                                         text="Filme",
-                                        variable=tipoVar,
+                                        variable=self.tipoAdicionarVar,
                                         radiobutton_width=20,
                                         radiobutton_height=20,
                                         border_width_unchecked=3,
@@ -161,9 +162,9 @@ class View:
                                         value="Filme")
         radioFilme.pack(side="left", padx=6)
 
-        radioSerie = ctk.CTkRadioButton(self.frameRadioTipo,
+        radioSerie = ctk.CTkRadioButton(frameRadioTipo,
                                         text="Série",
-                                        variable=tipoVar,
+                                        variable=self.tipoAdicionarVar,
                                         radiobutton_width=20,
                                         radiobutton_height=20,
                                         border_width_unchecked=3,
@@ -175,51 +176,7 @@ class View:
                                         value="Série")
         radioSerie.pack(side="left")
 
-    def botoes(self):
-        frameBotoesAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        frameBotoesAdicionar.pack(anchor='w', pady=(10,0))
-
-
-        voltar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Voltar", command=self.showTelamenu, width=30)
-        voltar_btn.pack(side="left", padx=10)
-
-        limpar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Limpar", width=30, command=lambda: print("Limpar"))
-        limpar_btn.pack(side="left", padx=10)
-
-        salvar_btn = ctk.CTkButton(frameBotoesAdicionar, text="Salvar", width=30, command=lambda: print("Salvar"))
-        salvar_btn.pack(side="left", padx=10)
-
-    def inputAdicionar(self):
-        frameInputsAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        frameInputsAdicionar.pack(anchor='w')
-
-        frameNomeAdicionar = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameNomeAdicionar.pack(anchor='w', pady=(0,10))
-
-        # Nome
-        nomeLabel = ctk.CTkLabel(frameNomeAdicionar,
-                                  text="Nome",
-                                  font=ctk.CTkFont("Inter", 16))
-        nomeLabel.pack(anchor="w", pady=(10, 0))
-
-        nomeEntry = ctk.CTkEntry(frameNomeAdicionar,
-                                  width=270,
-                                  height=30,
-                                  font=ctk.CTkFont("Inter", 12))
-        nomeEntry.pack(anchor="w")
-
-        # Gênero e Ano
-        frameGeneroAno = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameGeneroAno.pack(anchor="w", pady=(0,15))
-
-        frameGenero = ctk.CTkFrame(frameGeneroAno, fg_color="transparent")
-        frameGenero.pack(anchor="w",side="left")
-
-        genero_label = ctk.CTkLabel(frameGenero,
-                                    text="Gênero",
-                                    font=ctk.CTkFont("Inter", 16))
-        genero_label.pack(anchor="w")
-
+    def nomeGeneroAdicionar(self):
         generos = [
             "Ação",
             "Aventura",
@@ -233,71 +190,46 @@ class View:
             "Musical"
         ]
 
-        genero_menu = ctk.CTkOptionMenu(frameGenero,
-                                        values=generos,
-                                        dropdown_font=ctk.CTkFont("Inter", 12),
-                                        font=ctk.CTkFont("Inter", 12, weight="bold"),
-                                        fg_color="grey",
-                                        button_color="#656565",
-                                        button_hover_color="#414141",
-                                        dropdown_fg_color="#AFB4BC",
-                                        dropdown_hover_color="#414141",
-                                        dropdown_text_color="white"
-                                        )
-        genero_menu.pack()
+        frameNomeGenero = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameNomeGenero.pack(anchor='w', fill="x", pady=(5,10))
 
-        frameAno = ctk.CTkFrame(frameGeneroAno, fg_color="transparent")
-        frameAno.pack(side="left", anchor="w")
+        frameNomeAdicionar = ctk.CTkFrame(frameNomeGenero, fg_color="transparent")
+        frameNomeAdicionar.pack( anchor='w', side="left")
 
-        anoLabel = ctk.CTkLabel(frameAno,
-                                    text="Ano",
-                                    font=ctk.CTkFont("Inter", 16))
-        anoLabel.pack(anchor="w", padx=(60,0))
+        frameGenero = ctk.CTkFrame(frameNomeGenero, fg_color="transparent")
+        frameGenero.pack(anchor="w", side="right")
 
-        anoEntry = ctk.CTkEntry(frameAno,
-                                  width=70,
-                                  height=30,
-                                  font=ctk.CTkFont("Inter", 12))
-        anoEntry.pack(anchor="w", padx=(60,0))
-
-
-        # Gênero e Ano
-
-        # Temporadas e Episódios
-        frameTempEpi = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameTempEpi.pack(pady=(5,10),anchor="w")
-
-        frameTemp = ctk.CTkFrame(frameTempEpi, fg_color="transparent")
-        frameTemp.pack(side="left")
-
-        labelTemp = ctk.CTkLabel(frameTemp,
-                                  text="Temp.",
-                                  font=ctk.CTkFont("Inter", 16))
-        labelTemp.pack(side="left", anchor="w")
-
-        entryTemp = ctk.CTkEntry(frameTemp,
-                                  width=50,
-                                  height=30,
-                                  font=ctk.CTkFont("Inter", 12)
-                                  )
-        entryTemp.pack(side="left", padx=(5,0))
-
-        frameEpi = ctk.CTkFrame(frameTempEpi, fg_color="transparent")
-        frameEpi.pack(side="left", padx=(41,0))
-
-        labelEpi = ctk.CTkLabel(frameEpi,
-                                 text="Ep./Temp.",
+        nomeLabel = ctk.CTkLabel(frameNomeAdicionar,
+                                 text="Nome",
                                  font=ctk.CTkFont("Inter", 16))
-        labelEpi.pack(side="left", anchor="w")
-        entryEpi = ctk.CTkEntry(frameEpi,
-                                 width=50,
+        nomeLabel.pack(anchor="w")
+
+        self.entryNome = ctk.CTkEntry(frameNomeAdicionar,
+                                 width=200,
                                  height=30,
-                                 font=ctk.CTkFont("Inter", 12)
-                                 )
-        entryEpi.pack(side="left", padx=(5,0))
+                                 font=ctk.CTkFont("Inter", 12))
+        self.entryNome.pack()
 
- # Streaming
+        labelGenero = ctk.CTkLabel(frameGenero,
+                                   text="Gênero",
+                                   font=ctk.CTkFont("Inter", 16))
+        labelGenero.pack(anchor="w")
 
+        self.comboboxGeneroAdicionar = ctk.CTkOptionMenu(frameGenero,
+                                            values=generos,
+                                            dropdown_font=ctk.CTkFont("Inter", 12),
+                                            font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                            fg_color="grey",
+                                            button_color="#656565",
+                                            button_hover_color="#414141",
+                                            dropdown_fg_color="#AFB4BC",
+                                            dropdown_hover_color="grey",
+                                            dropdown_text_color="black",
+                                            width=130,
+                                            height=30)
+        self.comboboxGeneroAdicionar.pack()
+
+    def anoStreamingAdicionar(self):
         streamings = [
             "Alugar",
             "Apple TV +",
@@ -310,41 +242,90 @@ class View:
             "Youtube"
         ]
 
-        frameStreaming = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameStreaming.pack(pady=(5,10), anchor="w")
+        frameStremingAno = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameStremingAno.pack(anchor="w", fill="x", pady=(5,10))
 
-        streaming_label = ctk.CTkLabel(frameStreaming,
+        frameStreaming = ctk.CTkFrame(frameStremingAno, fg_color="transparent")
+        frameStreaming.pack(anchor="w", side="left")
+
+        frameAno = ctk.CTkFrame(frameStremingAno, fg_color="transparent")
+        frameAno.pack(anchor="w", side="right")
+
+        labelAno = ctk.CTkLabel(frameAno,
+                                text="Ano",
+                                font=ctk.CTkFont("Inter", 16))
+        labelAno.pack(anchor="w")
+
+        self.entryAno = ctk.CTkEntry(frameAno,
+                                width=100,
+                                height=30,
+                                font=ctk.CTkFont("Inter", 12))
+        self.entryAno.pack()
+
+        labelStraming = ctk.CTkLabel(frameStreaming,
                                        text="Streaming",
                                        font=ctk.CTkFont("Inter", 16))
-        streaming_label.pack(anchor="w")
+        labelStraming.pack(anchor="w")
 
-        streaming_menu = ctk.CTkOptionMenu(frameStreaming,
-                                        values=streamings,
-                                        dropdown_font=ctk.CTkFont("Inter", 12),
-                                        font=ctk.CTkFont("Inter", 12, weight="bold"),
-                                        fg_color="grey",
-                                        button_color="#656565",
-                                        button_hover_color="#414141",
-                                        dropdown_fg_color="#AFB4BC",
-                                        dropdown_hover_color="#414141",
-                                        dropdown_text_color="white"
-                                        )
-        streaming_menu.pack()
+        self.comboboxStreamingAdicionar = ctk.CTkOptionMenu(frameStreaming,
+                                           values=streamings,
+                                           dropdown_font=ctk.CTkFont("Inter", 12),
+                                           font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                           fg_color="grey",
+                                           button_color="#656565",
+                                           button_hover_color="#414141",
+                                           dropdown_fg_color="#AFB4BC",
+                                           dropdown_hover_color="grey",
+                                           dropdown_text_color="black"
+                                           )
+        self.comboboxStreamingAdicionar.pack()
 
+    def tempEpiAdicionar(self):
+        frameTempEpi = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameTempEpi.pack(anchor="w", fill="x", pady=(10, 10))
 
-        # Status
-        frameStatus = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameStatus.pack(pady=(10, 0), anchor="w")
+        frameTemp = ctk.CTkFrame(frameTempEpi, fg_color="transparent")
+        frameTemp.pack(side="left")
+
+        frameEpi = ctk.CTkFrame(frameTempEpi, fg_color="transparent")
+        frameEpi.pack(side="right")
+
+        labelTemp = ctk.CTkLabel(frameTemp,
+                                 text="Temporadas",
+                                 font=ctk.CTkFont("Inter", 16))
+        labelTemp.pack(side="left", anchor="w")
+
+        self.entryTempAdicionar = ctk.CTkEntry(frameTemp,
+                                 width=60,
+                                 height=30,
+                                 font=ctk.CTkFont("Inter", 12))
+        self.entryTempAdicionar.pack(side="left", padx=(5, 0))
+
+        labelEpi = ctk.CTkLabel(frameEpi,
+                                text="Ep./Temp.",
+                                font=ctk.CTkFont("Inter", 16))
+        labelEpi.pack(side="left", anchor="w")
+
+        self.entryEpiAdicionar = ctk.CTkEntry(frameEpi,
+                                width=60,
+                                height=30,
+                                font=ctk.CTkFont("Inter", 12))
+        self.entryEpiAdicionar.pack(side="left")
+
+    def statusAdicionar(self):
+        frameStatus = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameStatus.pack(anchor="w", fill="x", pady=(0, 10))
 
         labelStatus = ctk.CTkLabel(frameStatus,
-                                    text="Status",
-                                    font=ctk.CTkFont("Inter", 16))
+                                   text="Status",
+                                   font=ctk.CTkFont("Inter", 16))
         labelStatus.pack(anchor="w")
 
-        statusVar = ctk.StringVar(value="")
-        btnQuero = ctk.CTkRadioButton(frameStatus,
+        self.statusAdicionarVar = ctk.StringVar(value="")
+
+        radioQuero = ctk.CTkRadioButton(frameStatus,
                                       text="Quero Assistir",
-                                      variable=statusVar,
+                                      variable=self.statusAdicionarVar,
                                       radiobutton_width=20,
                                       radiobutton_height=20,
                                       border_width_unchecked=3,
@@ -352,13 +333,13 @@ class View:
                                       fg_color="#414141",
                                       hover_color="#6F6F83",
                                       border_color="grey",
-                                      font=ctk.CTkFont("Inter", 12),
+                                      font=ctk.CTkFont("Inter", 14),
                                       value="Quero Assistir")
-        btnQuero.pack(side="left", padx=5)
+        radioQuero.pack(side="left", padx=(0,20))
 
-        btnAssis = ctk.CTkRadioButton(frameStatus,
+        radioAssis = ctk.CTkRadioButton(frameStatus,
                                       text="Assistindo",
-                                      variable=statusVar,
+                                      variable=self.statusAdicionarVar,
                                       radiobutton_width=20,
                                       radiobutton_height=20,
                                       border_width_unchecked=3,
@@ -366,13 +347,13 @@ class View:
                                       fg_color="#414141",
                                       hover_color="#6F6F83",
                                       border_color="grey",
-                                      font=ctk.CTkFont("Inter", 12),
+                                      font=ctk.CTkFont("Inter", 14),
                                       value="Assistindo")
-        btnAssis.pack(side="left", padx=5)
+        radioAssis.pack(side="left", padx=(0,20))
 
-        btnConc = ctk.CTkRadioButton(frameStatus,
+        radioConc = ctk.CTkRadioButton(frameStatus,
                                      text="Concluído",
-                                     variable=statusVar,
+                                     variable=self.statusAdicionarVar,
                                      radiobutton_width=20,
                                      radiobutton_height=20,
                                      border_width_unchecked=3,
@@ -380,40 +361,67 @@ class View:
                                      fg_color="#414141",
                                      hover_color="#6F6F83",
                                      border_color="grey",
-                                     font=ctk.CTkFont("Inter", 12),
+                                     font=ctk.CTkFont("Inter", 14),
                                      value="Concluído")
-        btnConc.pack(side="left")
+        radioConc.pack(side="left")
 
-        # Avaliação
-        frameNota = ctk.CTkFrame(frameInputsAdicionar, fg_color="transparent")
-        frameNota.pack(pady=(10, 0), anchor="w")
+    def spinAdicionar(self):
+        frameNota = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameNota.pack(anchor="w", fill="x", pady=(5, 10))
 
-        nota_label = ctk.CTkLabel(frameNota,
+        labelAvalie = ctk.CTkLabel(frameNota,
                                   text="Avalie esse título",
                                   font=ctk.CTkFont("Inter", 16),
                                   )
-        nota_label.pack(anchor="w")
+        labelAvalie.pack(anchor="w")
 
-        spin_var = tk.IntVar(value=1)
+        self.spinNotaAdicionarVar = tk.IntVar(value=10)
 
-        # Cria o widget Spinbox
-        spinbox = tk.Spinbox(
-            frameNota,
-            from_=1,
-            to=10,
-            textvariable=spin_var,
-            width=2,
-            font=("Inter", 12),
-            justify="center",
-            relief="groove"
+        spinNota = tk.Spinbox(
+                        frameNota,
+                        from_=1,
+                        to=10,
+                        textvariable=self.spinNotaAdicionarVar,
+                        width=2,
+                        fg="black",
+                        bg="grey",
+                        font=("Inter", 12),
+                        justify="center",
+                        relief="groove")
+        spinNota.pack(anchor="w")
 
-        )
-        spinbox.pack(anchor="w")
+    def botoesAdicionar(self):
+        frameBotoesAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
+        frameBotoesAdicionar.pack(anchor='center', fill="x", pady=(10, 10))
 
+        #trocar hover
 
+        btnVoltar = ctk.CTkButton(frameBotoesAdicionar,
+                                  text="Voltar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#9A9A9A",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=self.showTelamenu)
+        btnVoltar.pack(side="left", padx=(0, 10))
 
+        btnLimpar = ctk.CTkButton(frameBotoesAdicionar,
+                                  text="Limpar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#9A9A9A",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=lambda: print("Limpar"))
+        btnLimpar.pack(side="left", padx=(0, 10))
 
-
+        btnSalvar = ctk.CTkButton(frameBotoesAdicionar,
+                                  text="Salvar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#9A9A9A",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=lambda: print("Salvar"))
+        btnSalvar.pack(side="left")
 
 if __name__ == "__main__":
     View()
