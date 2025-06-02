@@ -5,6 +5,8 @@ from tkinter import messagebox, ttk
 
 class View:
 
+    # atualizar nome de funçoes tudo minusculo com _
+
     def __init__(self):
         ctk.set_appearance_mode("Light")  # Opções: "Dark", "Light", "System"
         ctk.set_default_color_theme("blue")  # Você pode mudar o tema aqui
@@ -56,7 +58,7 @@ class View:
     def showTelaVisaoGeral(self):
 
         self.frameVisaoGeral.tkraise()
-        self.root.geometry("600x815")
+        self.root.geometry("900x400")
 
 
     # ---------------Menu--------------------
@@ -681,202 +683,251 @@ class View:
 # ---------------Visão Geral--------------------
 
     def telaGeral(self):
-        self.create_table_section()
+        self.tituloVisaoGeral()
+        self.tipoVisaoGeral()
+        self.filtrosSecao()
+        self.criarTabela()
 
+    def tituloVisaoGeral(self):
+        frameTitulo = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
+        frameTitulo.pack(pady=(5, 10), anchor="w")
 
+        labelVisaoGeral = ctk.CTkLabel(frameTitulo,
+                             text="Visão Geral",
+                             font=ctk.CTkFont("Inter", 24, weight="bold"))
+        labelVisaoGeral.pack(anchor="w")
 
+    def tipoVisaoGeral(self):
+        frame_tipo = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
+        frame_tipo.pack(anchor="w", pady=(5, 10))
 
+        label = ctk.CTkLabel(frame_tipo,
+                             text="O que deseja visualizar:",
+                             font=ctk.CTkFont("Inter", 16))
+        label.pack(anchor="w")
 
-    def create_title_section(self):
-        """Creates the main title 'Visão Geral'."""
-        title_label = ctk.CTkLabel(self.frameVisaoGeral,
-                                   text="Visão Geral",
-                                   font=self.font_title,
-                                   anchor="w")
-        title_label.grid(row=0, column=0, sticky="ew", padx=10, pady=(10, 15))
+        self.tipoAtualizarVar = ctk.StringVar(value="Filme")
 
-    def create_type_selection_section(self):
-        """Creates the 'O que deseja visualizar:' section with radio buttons."""
-        frame_type_selection = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
-        frame_type_selection.grid(row=1, column=0, sticky="w", padx=10, pady=(0, 15))
+        radio_filme = ctk.CTkRadioButton(frame_tipo, text="Filme",
+                                         variable=self.tipoAtualizarVar,
+                                         value="Filme",
+                                         font=ctk.CTkFont("Inter", 15),
+                                         radiobutton_width=20,
+                                         radiobutton_height=20,
+                                         border_width_unchecked=3,
+                                         border_width_checked=7,
+                                         fg_color="#414141",
+                                         hover_color="#6F6F83",
+                                         border_color="grey")
+        radio_filme.pack(side="left", padx=6)
 
-        label_type = ctk.CTkLabel(frame_type_selection,
-                                  text="O que deseja visualizar:",
-                                  font=self.font_subtitle)
-        label_type.pack(side="left", padx=(0, 10))
-
-        self.tipo_visualizar_var = ctk.StringVar(value="Série")  # Default selection based on image
-
-        radio_filme = ctk.CTkRadioButton(frame_type_selection,
-                                         text="Filme",
-                                         font=self.font_radio_text,
-                                         variable=self.tipo_visualizar_var,
-                                         value="Filme")
-        radio_filme.pack(side="left", padx=(0, 10))
-
-        radio_serie = ctk.CTkRadioButton(frame_type_selection,
-                                         text="Série",
-                                         font=self.font_radio_text,
-                                         variable=self.tipo_visualizar_var,
-                                         value="Série")
+        radio_serie = ctk.CTkRadioButton(frame_tipo, text="Série",
+                                         variable=self.tipoAtualizarVar,
+                                         value="Série",
+                                         font=ctk.CTkFont("Inter", 15),
+                                         radiobutton_width=20,
+                                         radiobutton_height=20,
+                                         border_width_unchecked=3,
+                                         border_width_checked=7,
+                                         fg_color="#414141",
+                                         hover_color="#6F6F83",
+                                         border_color="grey")
         radio_serie.pack(side="left")
 
-    def create_filters_section(self):
-        """Creates the filter dropdowns: Streaming, Gênero, Status, Ordenar por."""
-        filters_main_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
-        filters_main_frame.grid(row=2, column=0, sticky="ew", padx=10, pady=(0, 20))
+    def filtrosSecao(self):
 
-        # Configure columns to distribute space. We have 4 filters.
-        filters_main_frame.grid_columnconfigure((0, 1, 2, 3), weight=1)
-
-        # --- Placeholder values for dropdowns (add more as needed) ---
-        streaming_values = ["---", "Netflix", "Prime Video", "Max", "Disney +", "Apple TV +", "Globoplay",
+        streamings = ["---", "Netflix", "Prime Video", "Max", "Disney +", "Apple TV +", "Globoplay",
                             "Paramount +", "Youtube", "Alugar"]
+
         genero_values = ["---", "Ação", "Aventura", "Comédia", "Documentário", "Drama", "Terror", "Suspense", "Sci-fi",
                          "Romance", "Musical"]
         status_values = ["---", "Assistindo", "Concluído", "Quero Assistir"]
         ordenar_por_values = ["---", "Nome (A-Z)", "Nome (Z-A)", "Ano (Recente)", "Ano (Antigo)", "Nota (Maior)",
                               "Nota (Menor)"]
 
-        # --- Filter 1: Streaming ---
-        frame_streaming = ctk.CTkFrame(filters_main_frame, fg_color="transparent")
-        frame_streaming.grid(row=0, column=0, sticky="ew", padx=(0, 10))
-        label_streaming = ctk.CTkLabel(frame_streaming, text="Streaming:", font=self.font_filter_label, anchor="w")
-        label_streaming.pack(fill="x", pady=(0, 2))
-        self.combo_streaming = ctk.CTkOptionMenu(frame_streaming,
-                                                 values=streaming_values,
-                                                 font=self.font_filter_option,
-                                                 dropdown_font=self.font_filter_option)
-        self.combo_streaming.pack(fill="x")
+        frameFiltros = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
+        frameFiltros.pack(pady=(5, 10))
 
-        # --- Filter 2: Gênero ---
-        frame_genero = ctk.CTkFrame(filters_main_frame, fg_color="transparent")
-        frame_genero.grid(row=0, column=1, sticky="ew", padx=10)
-        label_genero = ctk.CTkLabel(frame_genero, text="Gênero:", font=self.font_filter_label, anchor="w")
-        label_genero.pack(fill="x", pady=(0, 2))
-        self.combo_genero = ctk.CTkOptionMenu(frame_genero,
-                                              values=genero_values,
-                                              font=self.font_filter_option,
-                                              dropdown_font=self.font_filter_option)
-        self.combo_genero.pack(fill="x")
+        frameStreaming = ctk.CTkFrame(frameFiltros, fg_color="transparent")
+        frameStreaming.pack(side="left", padx=15)
 
-        # --- Filter 3: Status ---
-        frame_status = ctk.CTkFrame(filters_main_frame, fg_color="transparent")
-        frame_status.grid(row=0, column=2, sticky="ew", padx=10)
-        label_status = ctk.CTkLabel(frame_status, text="Status:", font=self.font_filter_label, anchor="w")
-        label_status.pack(fill="x", pady=(0, 2))
-        self.combo_status = ctk.CTkOptionMenu(frame_status,
-                                              values=status_values,
-                                              font=self.font_filter_option,
-                                              dropdown_font=self.font_filter_option)
-        self.combo_status.pack(fill="x")
+        frameGenero = ctk.CTkFrame(frameFiltros, fg_color="transparent")
+        frameGenero.pack(side="left", padx=15)
 
-        # --- Filter 4: Ordenar por ---
-        frame_ordenar = ctk.CTkFrame(filters_main_frame, fg_color="transparent")
-        frame_ordenar.grid(row=0, column=3, sticky="ew", padx=(10, 0))
-        label_ordenar = ctk.CTkLabel(frame_ordenar, text="Ordenar por:", font=self.font_filter_label, anchor="w")
-        label_ordenar.pack(fill="x", pady=(0, 2))
-        self.combo_ordenar = ctk.CTkOptionMenu(frame_ordenar,
-                                               values=ordenar_por_values,
-                                               font=self.font_filter_option,
-                                               dropdown_font=self.font_filter_option)
-        self.combo_ordenar.pack(fill="x")
+        frameStatus = ctk.CTkFrame(frameFiltros, fg_color="transparent")
+        frameStatus.pack(side="left", padx=15)
 
-    def create_table_section(self):
-        # --- Font definitions (using Inter as in the original code) ---
-        self.font_title = ctk.CTkFont("Inter", 30, weight="bold")
-        self.font_subtitle = ctk.CTkFont("Inter", 16)
-        self.font_radio_text = ctk.CTkFont("Inter", 14)
-        self.font_filter_label = ctk.CTkFont("Inter", 14)
-        self.font_filter_option = ctk.CTkFont("Inter", 12)
-        self.font_button = ctk.CTkFont("Inter", 15, weight="bold")
-        self.font_table_header = ctk.CTkFont("Inter", 11, weight="bold")
-        self.font_table_row = ctk.CTkFont("Inter", 10)
+        frameOrdenar = ctk.CTkFrame(frameFiltros, fg_color="transparent")
+        frameOrdenar.pack(side="left", padx=15)
 
+        labelStraming = ctk.CTkLabel(frameStreaming,
+                                     text="Streaming:",
+                                     font=ctk.CTkFont("Inter", 16))
+        labelStraming.pack(anchor="w")
 
-        """Creates the table/Treeview to display data."""
+        self.comboboxStreamingAdicionar = ctk.CTkOptionMenu(frameStreaming,
+                                                            values=streamings,
+                                                            dropdown_font=ctk.CTkFont("Inter", 12),
+                                                            font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                                            fg_color="grey",
+                                                            button_color="#656565",
+                                                            button_hover_color="#414141",
+                                                            dropdown_fg_color="#AFB4BC",
+                                                            dropdown_hover_color="grey",
+                                                            dropdown_text_color="black"
+                                                            )
+        self.comboboxStreamingAdicionar.pack()
+
+        labelGenero = ctk.CTkLabel(frameGenero,
+                                     text="Genero:",
+                                     font=ctk.CTkFont("Inter", 16))
+        labelGenero.pack(anchor="w")
+
+        self.comboboxGeneroAtualizar = ctk.CTkOptionMenu(frameGenero,
+                                                            values=genero_values,
+                                                            dropdown_font=ctk.CTkFont("Inter", 12),
+                                                            font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                                            fg_color="grey",
+                                                            button_color="#656565",
+                                                            button_hover_color="#414141",
+                                                            dropdown_fg_color="#AFB4BC",
+                                                            dropdown_hover_color="grey",
+                                                            dropdown_text_color="black")
+        self.comboboxGeneroAtualizar.pack()
+
+        labelStatus = ctk.CTkLabel(frameStatus,
+                                   text="Status:",
+                                   font=ctk.CTkFont("Inter", 16))
+        labelStatus.pack(anchor="w")
+
+        self.comboboxStatusAtualizar = ctk.CTkOptionMenu(frameStatus,
+                                                         values=status_values,
+                                                         dropdown_font=ctk.CTkFont("Inter", 12),
+                                                         font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                                         fg_color="grey",
+                                                         button_color="#656565",
+                                                         button_hover_color="#414141",
+                                                         dropdown_fg_color="#AFB4BC",
+                                                         dropdown_hover_color="grey",
+                                                         dropdown_text_color="black")
+        self.comboboxStatusAtualizar.pack()
+
+        labelOrdenar = ctk.CTkLabel(frameOrdenar,
+                                   text="Ordenar por:",
+                                   font=ctk.CTkFont("Inter", 16))
+        labelOrdenar.pack(anchor="w")
+
+        self.comboboxStatusAtualizar = ctk.CTkOptionMenu(frameOrdenar,
+                                                         values=ordenar_por_values,
+                                                         dropdown_font=ctk.CTkFont("Inter", 12),
+                                                         font=ctk.CTkFont("Inter", 12, weight="bold"),
+                                                         fg_color="grey",
+                                                         button_color="#656565",
+                                                         button_hover_color="#414141",
+                                                         dropdown_fg_color="#AFB4BC",
+                                                         dropdown_hover_color="grey",
+                                                         dropdown_text_color="black")
+        self.comboboxStatusAtualizar.pack()
+
+    def criarTabela(self):
         table_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
-        table_frame.grid(row=3, column=0, sticky="nsew", padx=10, pady=(0, 15))
+        table_frame.pack(fill="both", expand=False, padx=10, pady=(0, 15))
         table_frame.grid_columnconfigure(0, weight=1)
         table_frame.grid_rowconfigure(0, weight=1)
 
-        # --- Style for Treeview (to match CustomTkinter look and feel) ---
-        # The Treeview header background in the image is a light purplish-gray.
-        # Treeview item rows are white.
-        style = ttk.Style()
-        # Note: theme_use might affect other ttk widgets if you have them.
-        # 'clam' is often a good base for custom styling.
+        style = ttk.Style(table_frame)
+
         try:
             style.theme_use("clam")
         except tk.TclError:
-            # Fallback if 'clam' is not available on all systems
             style.theme_use("default")
 
         style.configure("Treeview.Heading",
-                        font=self.font_table_header,
-                        background="#E8E8F0",  # Light purplish-gray for header
+                        font=('Inter', 12, 'bold'),
+                        background="#C4C4C4",
                         foreground="black",
-                        relief="flat",
-                        padding=(5, 5))
+                        borderwidth = 0,
+                        relief = "flat")
+
         style.map("Treeview.Heading",
-                  relief=[('active', 'groove'), ('!active', 'flat')])
+                  background=[('active', 'grey')])
 
         style.configure("Treeview",
-                        font=self.font_table_row,
-                        background="white",  # Background of the tree itself
-                        fieldbackground="white",  # Background of the fields
-                        foreground="black",
-                        rowheight=25,  # Adjust row height
-                        relief="solid",  # Border around the treeview
-                        borderwidth=1,
-                        )
-        # Remove border from items, use a light gray for selected item
-        style.map('Treeview',
-                  background=[('selected', '#D0D0D5')],
-                  foreground=[('selected', 'black')],
-                  borderwidth=[('focus', 0), ('!focus', 0)])
+                        font=('Inter', 9),
+                        rowheight=25)
 
-        columns = ("titulo", "genero", "status", "ano", "progresso", "temporadas", "episodios", "media_notas")
+        style.map("Treeview",
+                  background=[('selected', 'grey')],
+                  foreground=[('selected', 'white')])
 
-        self.tree = ttk.Treeview(table_frame, columns=columns, show="headings", style="Treeview")
+        tabela = ttk.Treeview(table_frame, columns=[], show='headings')
 
-        # --- Define headings ---
-        self.tree.heading("titulo", text="Título", anchor=tk.W)
-        self.tree.heading("genero", text="Gênero", anchor=tk.W)
-        self.tree.heading("status", text="Status", anchor=tk.W)
-        self.tree.heading("ano", text="Ano", anchor=tk.CENTER)
-        self.tree.heading("progresso", text="Progresso", anchor=tk.CENTER)
-        self.tree.heading("temporadas", text="Temporadas", anchor=tk.CENTER)
-        self.tree.heading("episodios", text="Episódios", anchor=tk.CENTER)
-        self.tree.heading("media_notas", text="Media das Notas", anchor=tk.CENTER)
+        tabela.tag_configure('cinza',
+                             background='#EBEBEB',
+                             foreground='black')
+        tabela.tag_configure('branco',
+                             background='white',
+                             foreground='black')
 
-        # --- Define column widths (adjust as needed) ---
-        self.tree.column("titulo", width=200, minwidth=150, stretch=tk.YES, anchor=tk.W)
-        self.tree.column("genero", width=50, minwidth=50, stretch=tk.YES, anchor=tk.W)
-        self.tree.column("status", width=70, minwidth=70, stretch=tk.YES, anchor=tk.W)
-        self.tree.column("ano", width=60, minwidth=50, stretch=tk.NO, anchor=tk.CENTER)
-        self.tree.column("progresso", width=80, minwidth=70, stretch=tk.NO, anchor=tk.CENTER)
-        self.tree.column("temporadas", width=80, minwidth=70, stretch=tk.NO, anchor=tk.CENTER)
-        self.tree.column("episodios", width=70, minwidth=60, stretch=tk.NO, anchor=tk.CENTER)
-        self.tree.column("media_notas", width=100, minwidth=90, stretch=tk.NO, anchor=tk.CENTER)
-
-        self.tree.grid(row=0, column=0, sticky="nsew")
-
-        # --- Add a scrollbar ---
-        scrollbar = ctk.CTkScrollbar(table_frame, command=self.tree.yview)
-        scrollbar.grid(row=0, column=1, sticky="ns")
-        self.tree.configure(yscrollcommand=scrollbar.set)
-
-        # --- Add sample data (as shown in the image) ---
-        sample_data = [
-            ("Stranger Thing", "Suspense", "Concluido", "2016", "100%", "4", "34", "9.4"),
-            ("Good Girls", "Comédia", "Concluido", "2018", "100%", "4", "50", "9.7"),
-            ("Elite", "Drama", "Assistindo", "2018", "84%", "8", "64", "---"),
-            ("Homem Aranha Longe de casa","")
+        dados = [
+            ("Stranger Things", "Suspense", "Concluído", 2016, "100%", 4, 34, 9.4),  # Exemplo original
+            ("Good Girls", "Comédia", "Concluído", 2018, "100%", 4, 50, 9.7),  # Exemplo original
+            ("Elite", "Drama", "Assistindo", 2018, "84%", 8, 64, "---"),  # Exemplo original
+            ("Breaking Bad", "Drama", "Concluído", 2008, "100%", 5, 62, 9.5),
+            ("Game of Thrones", "Fantasia", "Concluído", 2011, "100%", 8, 73, 9.2),
+            ("The Simpsons", "Animação", "Assistindo", 1989, "92%", 36, 780, 8.7),
+            # Estimativa de % e episódios baseada na longevidade
+            ("Friends", "Comédia", "Concluído", 1994, "100%", 10, 235, 8.9),
+            ("The Office (US)", "Comédia", "Concluído", 2005, "100%", 9, 201, 9.0),
+            ("Squid Game", "Suspense", "Assistindo", 2021, "50%", 2, 18, 8.0),  # Estimativa para S2
+            ("Wednesday", "Comédia", "Assistindo", 2022, "50%", 2, 16, 8.1),  # Estimativa para S2
+            ("Money Heist", "Ação", "Concluído", 2017, "100%", 5, 41, 8.2),
+            ("The Witcher", "Fantasia", "Assistindo", 2019, "60%", 5, 40, 8.1),  # Estimativa para temporadas futuras
+            ("Black Mirror", "Ficção Científica", "Assistindo", 2011, "85%", 7, 33, 8.7),
+            # Estimativa, incluindo especiais e futuras
+            ("The Crown", "Drama", "Concluído", 2016, "100%", 6, 60, 8.7),
+            ("Peaky Blinders", "Crime", "Concluído", 2013, "100%", 6, 36, 8.8),
+            ("Dark", "Mistério", "Concluído", 2017, "100%", 3, 26, 8.7),
+            ("The Mandalorian", "Ficção Científica", "Assistindo", 2019, "75%", 4, 32, 8.7),  # Estimativa para S4
+            ("Chernobyl", "Drama Histórico", "Concluído", 2019, "100%", 1, 5, 9.4),  # Minissérie
+            ("The Queen's Gambit", "Drama", "Concluído", 2020, "100%", 1, 7, 8.5),  # Minissérie
+            ("Ted Lasso", "Comédia", "Concluído", 2020, "100%", 3, 34, 8.8),
+            ("Severance", "Ficção Científica", "Assistindo", 2022, "50%", 2, 18, 8.7),  # Estimativa para S2
+            ("Succession", "Drama", "Concluído", 2018, "100%", 4, 39, 8.9),
+            ("The Last of Us", "Ação", "Assistindo", 2023, "50%", 2, 18, 8.8),  # Estimativa para S2
+            ("Yellowstone", "Drama", "Assistindo", 2018, "90%", 5, 53, 8.7),  # Episódios e % estimados para final da S5
+            ("House of the Dragon", "Fantasia", "Assistindo", 2022, "25%", 4, 40, 8.4),
+            # Estimativa para temporadas futuras
+            ("The Handmaid's Tale", "Drama", "Assistindo", 2017, "83%", 6, 66, 8.4),  # Estimativa para S6 final
+            ("Rick and Morty", "Animação", "Assistindo", 2013, "70%", 10, 81, 9.1),
+            # Estimativa para temporadas futuras
+            ("Ozark", "Suspense", "Concluído", 2017, "100%", 4, 44, 8.5)
         ]
+        cabecalhos = ["Título", "Gênero", "Status", "Ano", "Progresso", "Temps.", "Eps.", "Media Geral"]
 
-        for item in sample_data:
-            self.tree.insert("", tk.END, values=item)
+        tabela['columns'] = cabecalhos
+
+        for col in cabecalhos:
+            tabela.heading(col, text=col)
+            if col == "Título":
+                tabela.column(col, anchor=tk.W, width=80)
+            elif col == "Media Geral":
+                tabela.column(col, anchor=tk.CENTER, width=50)
+            else:
+                tabela.column(col, anchor=tk.CENTER, width=20)
+
+        for i, item in enumerate(dados):
+            if i % 2 == 0:
+                tabela.insert("", tk.END, values=item, tags=('cinza',))
+            else:
+                tabela.insert("", tk.END, values=item, tags=('branco',))
+
+        scrollbar = ctk.CTkScrollbar(table_frame, command=tabela.yview)
+        scrollbar.grid(row=0, column=1, sticky="ns")
+
+        tabela.configure(yscrollcommand=scrollbar.set)
+
+        tabela.grid(row=0, column=0, sticky="nsew")
 
     def create_action_buttons_section(self):
         """Creates the 'Voltar', 'Limpar', 'Filtrar' buttons."""
@@ -926,10 +977,6 @@ class View:
                                     text_color=btn_text_color,
                                     command=self.action_filtrar)  # Placeholder command
         btn_filtrar.pack(side="left")
-
-
-
-
 
 if __name__ == "__main__":
     View()
