@@ -49,6 +49,8 @@ class View:
         self.frameMenu.tkraise()
         self.root.geometry("450x500")
 
+    #---------tela Adicionar------------------
+
     def showTelaAdicionarSerieConcluido(self):
 
         self.frameAdicionar.tkraise()
@@ -74,10 +76,37 @@ class View:
         self.frameTempEpi.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStremingAno)
         self.root.geometry("450x440")
 
-    def showTelaAtualizar(self):
+    # ---------tela Atualizar------------------
 
+    def showTelaAtualizarFilme(self):
         self.frameAtualizar.tkraise()
+        self.frameNotaAtualizar.forget()
+        self.frameTempEpiAtualizar.forget()
+
         self.root.geometry("400x415")
+
+    def showTelaAtualizarFilmeConcluido(self):
+        self.frameAtualizar.tkraise()
+        self.frameTempEpiAtualizar.forget()
+        self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
+
+        self.root.geometry("400x415")
+
+    def showTelaAtualizarSerie(self):
+        self.frameAtualizar.tkraise()
+        self.frameNotaAtualizar.forget()
+        self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
+
+        self.root.geometry("400x415")
+
+    def showTelaAtualizarSerieConcluido(self):
+        self.frameAtualizar.tkraise()
+        self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
+        self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
+
+        self.root.geometry("400x415")
+
+    # ---------tela visão geral------------------
 
     def showTelaVisaoGeral(self):
 
@@ -132,7 +161,7 @@ class View:
                                       fg_color="grey",
                                       hover_color="#9A9A9A",
                                       cursor="hand2",
-                                      command=self.showTelaAtualizar)
+                                      command=self.showTelaAtualizarFilme)
         btnAtualize.pack(pady=10)
 
         btnGeral = ctk.CTkButton(self.frameBotoesMenu,
@@ -210,7 +239,7 @@ class View:
                                         border_color="grey",
                                         font=ctk.CTkFont("Inter", 15),
                                         value="Filme",
-                                        command=self.mudar_tipo_status_tela)
+                                        command=self.mudar_tipo_status_tela_adicionar)
         radioFilme.pack(side="left", padx=6)
 
         radioSerie = ctk.CTkRadioButton(frameRadioTipo,
@@ -225,7 +254,7 @@ class View:
                                         border_color="grey",
                                         font=ctk.CTkFont("Inter", 15),
                                         value="Série",
-                                        command=self.mudar_tipo_status_tela)
+                                        command=self.mudar_tipo_status_tela_adicionar)
         radioSerie.pack(side="left")
 
     def nomeGeneroAdicionar(self):
@@ -387,7 +416,7 @@ class View:
                                       border_color="grey",
                                       font=ctk.CTkFont("Inter", 14),
                                       value="Quero Assistir",
-                                      command=self.mudar_tipo_status_tela)
+                                      command=self.mudar_tipo_status_tela_adicionar)
         radioQuero.pack(side="left", padx=(0,20))
 
         radioAssis = ctk.CTkRadioButton(self.frameStatus,
@@ -402,7 +431,7 @@ class View:
                                       border_color="grey",
                                       font=ctk.CTkFont("Inter", 14),
                                       value="Assistindo",
-                                      command=self.mudar_tipo_status_tela)
+                                      command=self.mudar_tipo_status_tela_adicionar)
         radioAssis.pack(side="left", padx=(0,20))
 
         radioConc = ctk.CTkRadioButton(self.frameStatus,
@@ -417,7 +446,7 @@ class View:
                                      border_color="grey",
                                      font=ctk.CTkFont("Inter", 14),
                                      value="Concluído",
-                                     command=self.mudar_tipo_status_tela)
+                                     command=self.mudar_tipo_status_tela_adicionar)
         radioConc.pack(side="left")
 
     def spinAdicionar(self):
@@ -508,10 +537,11 @@ class View:
                              font=ctk.CTkFont("Inter", 16))
         label.pack(anchor="w")
 
-        self.tipoAtualizarVar = ctk.StringVar(value="Filme")
+        self.tipoAtualizarVariavel = ctk.StringVar(value="Filme")
 
-        radio_filme = ctk.CTkRadioButton(frame_tipo, text="Filme",
-                                         variable=self.tipoAtualizarVar,
+        radio_filme = ctk.CTkRadioButton(frame_tipo,
+                                         text="Filme",
+                                         variable=self.tipoAtualizarVariavel,
                                          value="Filme",
                                          font=ctk.CTkFont("Inter", 15),
                                          radiobutton_width=20,
@@ -520,11 +550,13 @@ class View:
                                          border_width_checked=7,
                                          fg_color="#414141",
                                          hover_color="#6F6F83",
-                                         border_color="grey")
+                                         border_color="grey",
+                                         command=self.mudar_tipo_status_tela_atualizar)
         radio_filme.pack(side="left", padx=6)
 
-        radio_serie = ctk.CTkRadioButton(frame_tipo, text="Série",
-                                         variable=self.tipoAtualizarVar,
+        radio_serie = ctk.CTkRadioButton(frame_tipo,
+                                         text="Série",
+                                         variable=self.tipoAtualizarVariavel,
                                          value="Série",
                                          font=ctk.CTkFont("Inter", 15),
                                          radiobutton_width=20,
@@ -533,21 +565,22 @@ class View:
                                          border_width_checked=7,
                                          fg_color="#414141",
                                          hover_color="#6F6F83",
-                                         border_color="grey")
+                                         border_color="grey",
+                                         command=self.mudar_tipo_status_tela_atualizar)
         radio_serie.pack(side="left")
 
     def selecaoSerieAtualizar(self):
-        frameSerie = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
-        frameSerie.pack(anchor="w", pady=(5, 10))
+        self.frameSerieAtualizarCombo = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
+        self.frameSerieAtualizarCombo.pack(anchor="w", pady=(5, 10))
 
-        label = ctk.CTkLabel(frameSerie,
+        label = ctk.CTkLabel(self.frameSerieAtualizarCombo,
                              text="Selecione a série que deseja atualizar:",
                              font=ctk.CTkFont("Inter", 16))
         label.pack(anchor="w")
 
         self.seriesDisponiveis = ["Dark", "Wandinha", "Black Mirror"]
 
-        self.comboSerie = ctk.CTkOptionMenu(frameSerie,
+        self.comboSerie = ctk.CTkOptionMenu(self.frameSerieAtualizarCombo,
                                                 values=self.seriesDisponiveis,
                                                 dropdown_font=ctk.CTkFont("Inter", 12),
                                                 font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -560,10 +593,10 @@ class View:
         self.comboSerie.pack(side="left")
 
     def selecaoTempEpisAtualizar(self):
-        frameTempEpi = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
-        frameTempEpi.pack(anchor="w", pady=(10, 0))
+        self.frameTempEpiAtualizar = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
 
-        labelTemp = ctk.CTkLabel(frameTempEpi,
+
+        labelTemp = ctk.CTkLabel(self.frameTempEpiAtualizar,
                                  text="Temporada:",
                                  font=ctk.CTkFont("Inter", 16))
         labelTemp.pack(side="left", padx=(0, 2))
@@ -571,7 +604,7 @@ class View:
         self.tempAtualizarVar = tk.IntVar(value=1)
         self.qtdTempAtualizar = 3
 
-        spinTemp = tk.Spinbox(frameTempEpi,
+        spinTemp = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
                               to=self.qtdTempAtualizar,
                               textvariable=self.tempAtualizarVar,
@@ -583,7 +616,7 @@ class View:
                               relief="groove")
         spinTemp.pack(side="left")
 
-        labelEpi = ctk.CTkLabel(frameTempEpi,
+        labelEpi = ctk.CTkLabel(self.frameTempEpiAtualizar,
                                 text="Episódio:",
                                 font=ctk.CTkFont("Inter", 16))
         labelEpi.pack(side="left", padx=(10, 2))
@@ -591,7 +624,7 @@ class View:
         self.epiAtualizarVar = tk.IntVar(value=1)
         self.qtdEpiAtualizar = 12
 
-        spin_epi = tk.Spinbox(frameTempEpi,
+        spin_epi = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
                               to=self.qtdEpiAtualizar,
                               textvariable=self.epiAtualizarVar,
@@ -604,10 +637,10 @@ class View:
         spin_epi.pack(side="left")
 
     def notaAtualizar(self):
-        frameNota = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
-        frameNota.pack(anchor="w", fill="x", pady=(10, 10))
+        self.frameNotaAtualizar = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
 
-        labelAvalie = ctk.CTkLabel(frameNota,
+
+        labelAvalie = ctk.CTkLabel(self.frameNotaAtualizar,
                                    text="Avalie esse título:",
                                    font=ctk.CTkFont("Inter", 16),
                                    )
@@ -616,7 +649,7 @@ class View:
         self.spinNotaAtulizarVar = tk.IntVar(value=10)
 
         spinNota = tk.Spinbox(
-            frameNota,
+            self.frameNotaAtualizar,
             from_=1,
             to=10,
             textvariable=self.spinNotaAtulizarVar,
@@ -629,20 +662,20 @@ class View:
         spinNota.pack(anchor="w")
 
     def statusAtualizar(self):
-        frameStatus = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
-        frameStatus.pack(anchor="w", pady=(10, 10))
+        self.frameStatusAtualizar = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
+        self.frameStatusAtualizar.pack(anchor="w", pady=(10, 10))
 
-        labelStatus = ctk.CTkLabel(frameStatus, text="Status:", font=ctk.CTkFont("Inter", 16))
+        labelStatus = ctk.CTkLabel(self.frameStatusAtualizar, text="Status:", font=ctk.CTkFont("Inter", 16))
         labelStatus.pack(anchor="w")
 
-        frameRadioStatus = ctk.CTkFrame(frameStatus, fg_color="transparent")
+        frameRadioStatus = ctk.CTkFrame(self.frameStatusAtualizar, fg_color="transparent")
         frameRadioStatus.pack(anchor="w")
 
-        self.statusAtualizarVar = ctk.StringVar(value="Assistindo")
+        self.statusAtualizarVariavel = ctk.StringVar(value="Assistindo")
 
         radioAssistindo = ctk.CTkRadioButton(frameRadioStatus,
                                               text="Assistindo",
-                                              variable=self.statusAtualizarVar,
+                                              variable=self.statusAtualizarVariavel,
                                               value="Assistindo",
                                               font=ctk.CTkFont("Inter", 14),
                                               radiobutton_width=20,
@@ -651,12 +684,13 @@ class View:
                                               border_width_checked=7,
                                               fg_color="#414141",
                                               hover_color="#6F6F83",
-                                              border_color="grey")
+                                              border_color="grey",
+                                              command=self.mudar_tipo_status_tela_atualizar)
         radioAssistindo.pack(side="left", padx=10)
 
         radioConcluido = ctk.CTkRadioButton(frameRadioStatus,
                                              text="Concluído",
-                                             variable=self.statusAtualizarVar,
+                                             variable=self.statusAtualizarVariavel,
                                              value="Concluído",
                                              font=ctk.CTkFont("Inter", 14),
                                              radiobutton_width=20,
@@ -665,7 +699,8 @@ class View:
                                              border_width_checked=7,
                                              fg_color="#414141",
                                              hover_color="#6F6F83",
-                                             border_color="grey")
+                                             border_color="grey",
+                                            command=self.mudar_tipo_status_tela_atualizar)
         radioConcluido.pack(side="left")
 
     def botoesAtualizar(self):
@@ -989,10 +1024,15 @@ class View:
 
 # ---------------Funçoes--------------------
 
-    def mudar_tipo_status_tela(self):
+    def mudar_tipo_status_tela_adicionar(self):
         tipo = self.tipoAdicionarVar.get()
         status = self.statusAdicionarVar.get()
-        self.controller.tela_tipo_status(tipo, status)
+        self.controller.tela_tipo_status_adicionar(tipo, status)
+
+    def mudar_tipo_status_tela_atualizar(self):
+        tipo = self.tipoAtualizarVariavel.get()
+        status = self.statusAtualizarVariavel.get()
+        self.controller.tela_tipo_status_atualizar(tipo, status)
 
 
 

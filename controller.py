@@ -5,7 +5,7 @@ class Controller():
         self.model = Model()
         self.view = view
 
-    def tela_tipo_status(self, tipo, status):
+    def tela_tipo_status_adicionar(self, tipo, status):
         if tipo == 'Filme':
             if status == 'Concluído':
                 self.view.showTelaAdicionarFilmeConcluido()
@@ -17,3 +17,16 @@ class Controller():
                 self.view.showTelaAdicionarSerieConcluido()
             else:
                 self.view.showTelaAdicionarSerie()
+
+    def tela_tipo_status_atualizar(self, tipo, status):
+        if tipo == 'Filme':
+            if status == 'Concluído':
+               self.view.showTelaAtualizarFilmeConcluido()
+            else:
+               self.view.showTelaAtualizarFilme()
+
+        if tipo == 'Série':
+            if status == 'Concluído':
+              self.view.showTelaAtualizarSerieConcluido()
+            else:
+              self.view.showTelaAtualizarSerie()
