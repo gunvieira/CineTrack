@@ -27,7 +27,7 @@ class View:
         self.frameVisaoGeral = ctk.CTkFrame(self.container, fg_color="transparent")
 
         self.frameMenu.grid(row=0, column=0, sticky="nswe", padx=20, pady=20)
-        self.frameAdicionar.grid(row=0, column=0, sticky="nswe", padx=30, pady=10)
+        self.frameAdicionar.grid(row=0, column=0, sticky="nswe", padx=20, pady=10)
         self.frameAtualizar.grid(row=0, column=0, sticky="nswe", padx=20, pady=10)
         self.frameVisaoGeral.grid(row=0, column=0, sticky="nswe", padx=20, pady=10)
 
@@ -58,7 +58,7 @@ class View:
     def showTelaVisaoGeral(self):
 
         self.frameVisaoGeral.tkraise()
-        self.root.geometry("900x400")
+        self.root.geometry("965x570")
 
 
     # ---------------Menu--------------------
@@ -427,7 +427,7 @@ class View:
                                   text="Voltar",
                                   width=120,
                                   fg_color="#414141",
-                                  hover_color="#9A9A9A",
+                                  hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
                                   command=self.showTelamenu)
         btnVoltar.pack(side="left", padx=(0, 10))
@@ -436,7 +436,7 @@ class View:
                                   text="Limpar",
                                   width=120,
                                   fg_color="#414141",
-                                  hover_color="#9A9A9A",
+                                  hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
                                   command=lambda: print("Limpar"))
         btnLimpar.pack(side="left", padx=(0, 10))
@@ -445,7 +445,7 @@ class View:
                                   text="Salvar",
                                   width=120,
                                   fg_color="#414141",
-                                  hover_color="#9A9A9A",
+                                  hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
                                   command=lambda: print("Salvar"))
         btnSalvar.pack(side="left")
@@ -648,7 +648,7 @@ class View:
                                   text="Voltar",
                                   width=80,
                                   fg_color="#414141",
-                                  hover_color="#9A9A9A",
+                                  hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
                                   command=self.showTelamenu)
         btnVoltar.pack(side="left", padx=5)
@@ -657,7 +657,7 @@ class View:
                                   text="Limpar",
                                   width=80,
                                   fg_color="#414141",
-                                  hover_color="#9A9A9A",
+                                  hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
                                   command=lambda: print("Limpar"))
         btnLimpar.pack(side="left", padx=5)
@@ -666,7 +666,7 @@ class View:
                                    text="Deletar",
                                    width=80,
                                    fg_color="#414141",
-                                   hover_color="#9A9A9A",
+                                   hover_color="#5B5B5B",
                                    font=ctk.CTkFont("Inter", 16),
                                    command=lambda: print("Deletar"))
         btnDeletar.pack(side="left", padx=5)
@@ -675,7 +675,7 @@ class View:
                                      text="Atualizar",
                                      width=80,
                                      fg_color="#414141",
-                                     hover_color="#9A9A9A",
+                                     hover_color="#5B5B5B",
                                      font=ctk.CTkFont("Inter", 16),
                                      command=lambda: messagebox.showinfo("CineTrack", "O título foi Atualizado."))
         btnAtualizar.pack(side="left", padx=5)
@@ -687,6 +687,7 @@ class View:
         self.tipoVisaoGeral()
         self.filtrosSecao()
         self.criarTabela()
+        self.botoesVisaoGeral()
 
     def tituloVisaoGeral(self):
         frameTitulo = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
@@ -831,7 +832,7 @@ class View:
 
     def criarTabela(self):
         table_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
-        table_frame.pack(fill="both", expand=False, padx=10, pady=(0, 15))
+        table_frame.pack(fill="both", expand=False, padx=10, pady=(5, 15))
         table_frame.grid_columnconfigure(0, weight=1)
         table_frame.grid_rowconfigure(0, weight=1)
 
@@ -870,40 +871,36 @@ class View:
                              foreground='black')
 
         dados = [
-            ("Stranger Things", "Suspense", "Concluído", 2016, "100%", 4, 34, 9.4),  # Exemplo original
-            ("Good Girls", "Comédia", "Concluído", 2018, "100%", 4, 50, 9.7),  # Exemplo original
-            ("Elite", "Drama", "Assistindo", 2018, "84%", 8, 64, "---"),  # Exemplo original
-            ("Breaking Bad", "Drama", "Concluído", 2008, "100%", 5, 62, 9.5),
-            ("Game of Thrones", "Fantasia", "Concluído", 2011, "100%", 8, 73, 9.2),
-            ("The Simpsons", "Animação", "Assistindo", 1989, "92%", 36, 780, 8.7),
-            # Estimativa de % e episódios baseada na longevidade
-            ("Friends", "Comédia", "Concluído", 1994, "100%", 10, 235, 8.9),
-            ("The Office (US)", "Comédia", "Concluído", 2005, "100%", 9, 201, 9.0),
-            ("Squid Game", "Suspense", "Assistindo", 2021, "50%", 2, 18, 8.0),  # Estimativa para S2
-            ("Wednesday", "Comédia", "Assistindo", 2022, "50%", 2, 16, 8.1),  # Estimativa para S2
-            ("Money Heist", "Ação", "Concluído", 2017, "100%", 5, 41, 8.2),
-            ("The Witcher", "Fantasia", "Assistindo", 2019, "60%", 5, 40, 8.1),  # Estimativa para temporadas futuras
-            ("Black Mirror", "Ficção Científica", "Assistindo", 2011, "85%", 7, 33, 8.7),
-            # Estimativa, incluindo especiais e futuras
-            ("The Crown", "Drama", "Concluído", 2016, "100%", 6, 60, 8.7),
-            ("Peaky Blinders", "Crime", "Concluído", 2013, "100%", 6, 36, 8.8),
-            ("Dark", "Mistério", "Concluído", 2017, "100%", 3, 26, 8.7),
-            ("The Mandalorian", "Ficção Científica", "Assistindo", 2019, "75%", 4, 32, 8.7),  # Estimativa para S4
-            ("Chernobyl", "Drama Histórico", "Concluído", 2019, "100%", 1, 5, 9.4),  # Minissérie
-            ("The Queen's Gambit", "Drama", "Concluído", 2020, "100%", 1, 7, 8.5),  # Minissérie
-            ("Ted Lasso", "Comédia", "Concluído", 2020, "100%", 3, 34, 8.8),
-            ("Severance", "Ficção Científica", "Assistindo", 2022, "50%", 2, 18, 8.7),  # Estimativa para S2
-            ("Succession", "Drama", "Concluído", 2018, "100%", 4, 39, 8.9),
-            ("The Last of Us", "Ação", "Assistindo", 2023, "50%", 2, 18, 8.8),  # Estimativa para S2
-            ("Yellowstone", "Drama", "Assistindo", 2018, "90%", 5, 53, 8.7),  # Episódios e % estimados para final da S5
-            ("House of the Dragon", "Fantasia", "Assistindo", 2022, "25%", 4, 40, 8.4),
-            # Estimativa para temporadas futuras
-            ("The Handmaid's Tale", "Drama", "Assistindo", 2017, "83%", 6, 66, 8.4),  # Estimativa para S6 final
-            ("Rick and Morty", "Animação", "Assistindo", 2013, "70%", 10, 81, 9.1),
-            # Estimativa para temporadas futuras
-            ("Ozark", "Suspense", "Concluído", 2017, "100%", 4, 44, 8.5)
+            ('Stranger Things', 'Netflix', 'Suspense', 'Concluído', 2016, '100%', 4, 34, 9.4),
+            ('Good Girls', 'Netflix', 'Comédia', 'Concluído', 2018, '100%', 4, 50, 9.7),
+            ('Elite', 'Netflix', 'Drama', 'Assistindo', 2018, '84%', 8, 64, '---'),
+            ('Breaking Bad', 'Netflix', 'Drama', 'Concluído', 2008, '100%', 5, 62, 9.5),
+            ('Game of Thrones', 'Max', 'Fantasia', 'Concluído', 2011, '100%', 8, 73, 9.2),
+            ('The Simpsons', 'Disney+', 'Animação', 'Assistindo', 1989, '92%', 36, 780, 8.7),
+            ('Friends', 'Max', 'Comédia', 'Concluído', 1994, '100%', 10, 235, 8.9),
+            ('The Office (US)', 'Prime Video', 'Comédia', 'Concluído', 2005, '100%', 9, 201, 9.0),
+            ('Squid Game', 'Netflix', 'Suspense', 'Assistindo', 2021, '50%', 2, 18, 8.0),
+            ('Wednesday', 'Netflix', 'Comédia', 'Assistindo', 2022, '50%', 2, 16, 8.1),
+            ('Money Heist', 'Netflix', 'Ação', 'Concluído', 2017, '100%', 5, 41, 8.2),
+            ('The Witcher', 'Netflix', 'Fantasia', 'Assistindo', 2019, '60%', 5, 40, 8.1),
+            ('Black Mirror', 'Netflix', 'Ficção Científica', 'Assistindo', 2011, '85%', 7, 33, 8.7),
+            ('The Crown', 'Netflix', 'Drama', 'Concluído', 2016, '100%', 6, 60, 8.7),
+            ('Peaky Blinders', 'Netflix', 'Crime', 'Concluído', 2013, '100%', 6, 36, 8.8),
+            ('Dark', 'Netflix', 'Mistério', 'Concluído', 2017, '100%', 3, 26, 8.7),
+            ('The Mandalorian', 'Disney+', 'Ficção Científica', 'Assistindo', 2019, '75%', 4, 32, 8.7),
+            ('Chernobyl', 'Max', 'Drama Histórico', 'Concluído', 2019, '100%', 1, 5, 9.4),
+            ('The Queen\'s Gambit', 'Netflix', 'Drama', 'Concluído', 2020, '100%', 1, 7, 8.5),
+            ('Ted Lasso', 'Apple TV+', 'Comédia', 'Concluído', 2020, '100%', 3, 34, 8.8),
+            ('Severance', 'Apple TV+', 'Ficção Científica', 'Assistindo', 2022, '50%', 2, 18, 8.7),
+            ('Succession', 'Max', 'Drama', 'Concluído', 2018, '100%', 4, 39, 8.9),
+            ('The Last of Us', 'Max', 'Ação', 'Assistindo', 2023, '50%', 2, 18, 8.8),
+            ('Yellowstone', 'Paramount+', 'Drama', 'Assistindo', 2018, '90%', 5, 53, 8.7),
+            ('House of the Dragon', 'Max', 'Fantasia', 'Assistindo', 2022, '25%', 4, 40, 8.4),
+            ('The Handmaid\'s Tale', 'Star+', 'Drama', 'Assistindo', 2017, '83%', 6, 66, 8.4),
+            ('Rick and Morty', 'Max', 'Animação', 'Assistindo', 2013, '70%', 10, 81, 9.1),
+            ('Ozark', 'Netflix', 'Suspense', 'Concluído', 2017, '100%', 4, 44, 8.5),
         ]
-        cabecalhos = ["Título", "Gênero", "Status", "Ano", "Progresso", "Temps.", "Eps.", "Media Geral"]
+        cabecalhos = ["Título", "Streaming", "Gênero", "Status", "Ano", "Progresso", "Temps.", "Eps.", "Media Geral"]
 
         tabela['columns'] = cabecalhos
 
@@ -929,54 +926,39 @@ class View:
 
         tabela.grid(row=0, column=0, sticky="nsew")
 
-    def create_action_buttons_section(self):
-        """Creates the 'Voltar', 'Limpar', 'Filtrar' buttons."""
-        buttons_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
-        # Center the frame itself using grid
-        buttons_frame.grid(row=4, column=0, sticky="ew", padx=10, pady=(10, 10))
+    def botoesVisaoGeral(self):
+        frameBotoesAtualizar = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
+        frameBotoesAtualizar.pack(anchor="center", pady=(10, 10))
 
-        # Use a sub-frame to group buttons and then center this sub-frame
-        # This allows buttons to have their natural width rather than expanding
-        inner_buttons_frame = ctk.CTkFrame(buttons_frame, fg_color="transparent")
-        inner_buttons_frame.pack(anchor="center")  # Center the inner frame
+        # trocar hover
 
-        # Button styling based on the image (light gray)
-        btn_fg_color = "#EAEAEA"
-        btn_hover_color = "#D0D0D0"
-        btn_text_color = "#333333"  # Dark gray text for better contrast on light button
+        btnVoltar = ctk.CTkButton(frameBotoesAtualizar,
+                                  text="Voltar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#5B5B5B",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=self.showTelamenu)
+        btnVoltar.pack(side="left", padx=(0, 10))
 
-        btn_voltar = ctk.CTkButton(inner_buttons_frame,
-                                   text="Voltar",
-                                   font=self.font_button,
-                                   width=110,
-                                   height=35,
-                                   fg_color=btn_fg_color,
-                                   hover_color=btn_hover_color,
-                                   text_color=btn_text_color,
-                                   command=self.action_voltar)  # Placeholder command
-        btn_voltar.pack(side="left", padx=(0, 15))
+        btnLimpar = ctk.CTkButton(frameBotoesAtualizar,
+                                  text="Limpar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#5B5B5B",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=lambda: print("Limpar"))
+        btnLimpar.pack(side="left", padx=(0, 10))
 
-        btn_limpar = ctk.CTkButton(inner_buttons_frame,
-                                   text="Limpar",
-                                   font=self.font_button,
-                                   width=110,
-                                   height=35,
-                                   fg_color=btn_fg_color,
-                                   hover_color=btn_hover_color,
-                                   text_color=btn_text_color,
-                                   command=self.action_limpar)  # Placeholder command
-        btn_limpar.pack(side="left", padx=(0, 15))
+        btnSalvar = ctk.CTkButton(frameBotoesAtualizar,
+                                  text="Filtrar",
+                                  width=120,
+                                  fg_color="#414141",
+                                  hover_color="#5B5B5B",
+                                  font=ctk.CTkFont("Inter", 16),
+                                  command=lambda: print("Filtrar"))
+        btnSalvar.pack(side="left")
 
-        btn_filtrar = ctk.CTkButton(inner_buttons_frame,
-                                    text="Filtrar",
-                                    font=self.font_button,
-                                    width=110,
-                                    height=35,
-                                    fg_color=btn_fg_color,
-                                    hover_color=btn_hover_color,
-                                    text_color=btn_text_color,
-                                    command=self.action_filtrar)  # Placeholder command
-        btn_filtrar.pack(side="left")
 
 if __name__ == "__main__":
     View()
