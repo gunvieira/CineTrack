@@ -1,15 +1,19 @@
-
-
+from model import Model
 
 class Controller():
     def __init__(self, view):
-
-
-        # Armazena uma ref. de view
+        self.model = Model()
         self.view = view
 
-    def somou(self):
-        # Processa o click
-        self.clicks += 1
-        # Retorna o dado p/ quem solicitou (controller)
-        return self.clicks
+    def tela_tipo_status(self, tipo, status):
+        if tipo == 'Filme':
+            if status == 'Concluído':
+                self.view.showTelaAdicionarFilmeConcluido()
+            else:
+                self.view.showTelaAdicionarFilme()
+
+        if tipo == 'Série':
+            if status == 'Concluído':
+                self.view.showTelaAdicionarSerieConcluido()
+            else:
+                self.view.showTelaAdicionarSerie()
