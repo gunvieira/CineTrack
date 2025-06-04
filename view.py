@@ -83,21 +83,21 @@ class View:
         self.frameNotaAtualizar.forget()
         self.frameTempEpiAtualizar.forget()
 
-        self.root.geometry("400x415")
+        self.root.geometry("400x330")
 
     def showTelaAtualizarFilmeConcluido(self):
         self.frameAtualizar.tkraise()
         self.frameTempEpiAtualizar.forget()
         self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
 
-        self.root.geometry("400x415")
+        self.root.geometry("400x380")
 
     def showTelaAtualizarSerie(self):
         self.frameAtualizar.tkraise()
         self.frameNotaAtualizar.forget()
         self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
 
-        self.root.geometry("400x415")
+        self.root.geometry("400x370")
 
     def showTelaAtualizarSerieConcluido(self):
         self.frameAtualizar.tkraise()
@@ -800,13 +800,13 @@ class View:
 
     def filtrosSecao(self):
 
-        streamings = ["---", "Netflix", "Prime Video", "Max", "Disney +", "Apple TV +", "Globoplay",
+        streamings = ["", "Netflix", "Prime Video", "Max", "Disney +", "Apple TV +", "Globoplay",
                             "Paramount +", "Youtube", "Alugar"]
 
-        genero_values = ["---", "Ação", "Aventura", "Comédia", "Documentário", "Drama", "Terror", "Suspense", "Sci-fi",
+        genero_values = ["", "Ação", "Aventura", "Comédia", "Documentário", "Drama", "Terror", "Suspense", "Sci-fi",
                          "Romance", "Musical"]
-        status_values = ["---", "Assistindo", "Concluído", "Quero Assistir"]
-        ordenar_por_values = ["---", "Nome (A-Z)", "Nome (Z-A)", "Ano (Recente)", "Ano (Antigo)", "Nota (Maior)",
+        status_values = ["", "Assistindo", "Concluído", "Quero Assistir"]
+        ordenar_por_values = ["", "Nome (A-Z)", "Nome (Z-A)", "Ano (Recente)", "Ano (Antigo)", "Nota (Maior)",
                               "Nota (Menor)"]
 
         frameFiltros = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
