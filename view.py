@@ -2,19 +2,20 @@ import customtkinter as ctk
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-from controller import Controller
+
 
 
 class View:
 
-    # atualizar nome de funçoes tudo minusculo com _
 
-    def __init__(self):
+    def __init__(self, controller):
+        self.controller = controller
+
         ctk.set_appearance_mode("Light")  # Opções: "Dark", "Light", "System"
         ctk.set_default_color_theme("blue")  # Você pode mudar o tema aqui
         self.root = ctk.CTk()
 
-        self.controller = Controller(self)
+
 
 
         self.root.title("Cine Track")
@@ -42,7 +43,9 @@ class View:
 
         self.showTelamenu()
 
-        self.root.mainloop()
+
+
+
 
     def showTelamenu(self):
 
@@ -197,6 +200,7 @@ class View:
     # ---------------Adicionar Novo Título--------------------
 
     def telaAdicionar(self):
+
         self.tituloAdicionar()
         self.radioTipoAdicionar()
         self.nomeGeneroAdicionar()
@@ -258,18 +262,7 @@ class View:
         radioSerie.pack(side="left")
 
     def nomeGeneroAdicionar(self):
-        generos = [
-            "Ação",
-            "Aventura",
-            "Comédia",
-            "Documentário",
-            "Drama",
-            "Terror",
-            "Suspense",
-            "Sci-fi",
-            "Romance",
-            "Musical"
-        ]
+        generos = self.controller.buscar_todos_os_generos()
 
         frameNomeGenero = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
         frameNomeGenero.pack(anchor='w', fill="x", pady=(5,10))
@@ -311,17 +304,7 @@ class View:
         self.comboboxGeneroAdicionar.pack()
 
     def anoStreamingAdicionar(self):
-        streamings = [
-            "Alugar",
-            "Apple TV +",
-            "Disney +",
-            "Globoplay",
-            "Max",
-            "Netflix",
-            "Paramount +",
-            "Prime Video",
-            "Youtube"
-        ]
+        streamings = self.controller.buscar_todos_os_streamings()
 
         self.frameStremingAno = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
         self.frameStremingAno.pack(anchor="w", fill="x", pady=(5,10))
@@ -357,9 +340,11 @@ class View:
                                            button_hover_color="#414141",
                                            dropdown_fg_color="#AFB4BC",
                                            dropdown_hover_color="grey",
-                                           dropdown_text_color="black"
-                                           )
+                                           dropdown_text_color="black",
+                                           width=130,
+                                           height=30)
         self.comboboxStreamingAdicionar.pack()
+        self.comboboxStreamingAdicionar.set(streamings[0])
 
     def tempEpiAdicionar(self):
         self.frameTempEpi = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
@@ -402,7 +387,7 @@ class View:
                                    font=ctk.CTkFont("Inter", 16))
         labelStatus.pack(anchor="w")
 
-        self.statusAdicionarVar = ctk.StringVar(value="")
+        self.statusAdicionarVar = ctk.StringVar(value="Quero Assistir")
 
         radioQuero = ctk.CTkRadioButton(self.frameStatus,
                                       text="Quero Assistir",
@@ -461,7 +446,7 @@ class View:
 
         self.spinNotaAdicionarVar = tk.IntVar(value=10)
 
-        spinNota = tk.Spinbox(self.frameNota,
+        self.spinNotaAdicionar = tk.Spinbox(self.frameNota,
                         from_=1,
                         to=10,
                         textvariable=self.spinNotaAdicionarVar,
@@ -470,9 +455,8 @@ class View:
                         bg="#AFB4BC",
                         font=("Inter", 12),
                         justify="center",
-                        text="Sua nota",
                         relief="groove")
-        spinNota.pack(anchor="w")
+        self.spinNotaAdicionar.pack(anchor="w")
 
     def botoesAdicionar(self):
         frameBotoesAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
@@ -504,7 +488,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=lambda: print("Salvar"))
+                                  command=self.cadastro_novo_titulo_filme)
         btnSalvar.pack(side="left")
 
 # ---------------Atualizar Título--------------------
@@ -648,7 +632,7 @@ class View:
 
         self.spinNotaAtulizarVar = tk.IntVar(value=10)
 
-        spinNota = tk.Spinbox(
+        self.spinNotaAtualizar = tk.Spinbox(
             self.frameNotaAtualizar,
             from_=1,
             to=10,
@@ -659,7 +643,7 @@ class View:
             font=("Inter", 12),
             justify="center",
             relief="groove")
-        spinNota.pack(anchor="w")
+        self.spinNotaAtualizar.pack(anchor="w")
 
     def statusAtualizar(self):
         self.frameStatusAtualizar = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
@@ -829,7 +813,7 @@ class View:
                                      font=ctk.CTkFont("Inter", 16))
         labelStraming.pack(anchor="w")
 
-        self.comboboxStreamingAdicionar = ctk.CTkOptionMenu(frameStreaming,
+        self.comboboxStreamingFiltro = ctk.CTkOptionMenu(frameStreaming,
                                                             values=streamings,
                                                             dropdown_font=ctk.CTkFont("Inter", 12),
                                                             font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -840,14 +824,14 @@ class View:
                                                             dropdown_hover_color="grey",
                                                             dropdown_text_color="black"
                                                             )
-        self.comboboxStreamingAdicionar.pack()
+        self.comboboxStreamingFiltro.pack()
 
         labelGenero = ctk.CTkLabel(frameGenero,
                                      text="Genero:",
                                      font=ctk.CTkFont("Inter", 16))
         labelGenero.pack(anchor="w")
 
-        self.comboboxGeneroAtualizar = ctk.CTkOptionMenu(frameGenero,
+        self.comboboxGeneroFiltro = ctk.CTkOptionMenu(frameGenero,
                                                             values=genero_values,
                                                             dropdown_font=ctk.CTkFont("Inter", 12),
                                                             font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -857,14 +841,14 @@ class View:
                                                             dropdown_fg_color="#AFB4BC",
                                                             dropdown_hover_color="grey",
                                                             dropdown_text_color="black")
-        self.comboboxGeneroAtualizar.pack()
+        self.comboboxGeneroFiltro.pack()
 
         labelStatus = ctk.CTkLabel(frameStatus,
                                    text="Status:",
                                    font=ctk.CTkFont("Inter", 16))
         labelStatus.pack(anchor="w")
 
-        self.comboboxStatusAtualizar = ctk.CTkOptionMenu(frameStatus,
+        self.comboboxStatusFiltro = ctk.CTkOptionMenu(frameStatus,
                                                          values=status_values,
                                                          dropdown_font=ctk.CTkFont("Inter", 12),
                                                          font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -874,14 +858,14 @@ class View:
                                                          dropdown_fg_color="#AFB4BC",
                                                          dropdown_hover_color="grey",
                                                          dropdown_text_color="black")
-        self.comboboxStatusAtualizar.pack()
+        self.comboboxStatusFiltro.pack()
 
         labelOrdenar = ctk.CTkLabel(frameOrdenar,
                                    text="Ordenar por:",
                                    font=ctk.CTkFont("Inter", 16))
         labelOrdenar.pack(anchor="w")
 
-        self.comboboxStatusAtualizar = ctk.CTkOptionMenu(frameOrdenar,
+        self.comboboxStatusFiltro = ctk.CTkOptionMenu(frameOrdenar,
                                                          values=ordenar_por_values,
                                                          dropdown_font=ctk.CTkFont("Inter", 12),
                                                          font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -891,7 +875,7 @@ class View:
                                                          dropdown_fg_color="#AFB4BC",
                                                          dropdown_hover_color="grey",
                                                          dropdown_text_color="black")
-        self.comboboxStatusAtualizar.pack()
+        self.comboboxStatusFiltro.pack()
 
     def criarTabela(self):
         table_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
@@ -1029,16 +1013,36 @@ class View:
         status = self.statusAdicionarVar.get()
         self.controller.tela_tipo_status_adicionar(tipo, status)
 
+
     def mudar_tipo_status_tela_atualizar(self):
         tipo = self.tipoAtualizarVariavel.get()
         status = self.statusAtualizarVariavel.get()
         self.controller.tela_tipo_status_atualizar(tipo, status)
 
+    def cadastro_novo_titulo_filme(self):
+        tipo = self.tipoAdicionarVar.get()
+        nome = self.entryNome.get()
+        genero = self.comboboxGeneroAdicionar.get()
+        ano = self.entryAno.get()
+        streaming = self.comboboxStreamingAdicionar.get()
+        status = self.statusAdicionarVar.get()
+        nota = self.spinNotaAdicionar.get()
+
+
+        self.controller.salvar_novo_filme(tipo, nome, genero, ano, streaming, status, nota)
+
+    def showVerificaoErro(self, mensagem):
+        mensagem_aviso = mensagem
+
+        messagebox.showwarning('CineTrack', mensagem_aviso)
+
+    def showVerificaoSucesso(self, mensagem):
+        mensagem_sucesso = mensagem
+
+        messagebox.showinfo('CineTrack', mensagem_sucesso)
 
 
 
-if __name__ == "__main__":
-    View()
 
 
 
