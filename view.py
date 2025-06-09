@@ -488,7 +488,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=self.cadastro_novo_titulo_filme)
+                                  command=self.cadastro_novo_titulo)
         btnSalvar.pack(side="left")
 
 # ---------------Atualizar Título--------------------
@@ -784,11 +784,9 @@ class View:
 
     def filtrosSecao(self):
 
-        streamings = ["", "Netflix", "Prime Video", "Max", "Disney +", "Apple TV +", "Globoplay",
-                            "Paramount +", "Youtube", "Alugar"]
+        streamings = [""] + self.controller.buscar_todos_os_streamings()
+        genero_values = [""] + self.controller.buscar_todos_os_generos()
 
-        genero_values = ["", "Ação", "Aventura", "Comédia", "Documentário", "Drama", "Terror", "Suspense", "Sci-fi",
-                         "Romance", "Musical"]
         status_values = ["", "Assistindo", "Concluído", "Quero Assistir"]
         ordenar_por_values = ["", "Nome (A-Z)", "Nome (Z-A)", "Ano (Recente)", "Ano (Antigo)", "Nota (Maior)",
                               "Nota (Menor)"]
@@ -1019,7 +1017,7 @@ class View:
         status = self.statusAtualizarVariavel.get()
         self.controller.tela_tipo_status_atualizar(tipo, status)
 
-    def cadastro_novo_titulo_filme(self):
+    def cadastro_novo_titulo(self):
         tipo = self.tipoAdicionarVar.get()
         nome = self.entryNome.get()
         genero = self.comboboxGeneroAdicionar.get()
@@ -1027,9 +1025,11 @@ class View:
         streaming = self.comboboxStreamingAdicionar.get()
         status = self.statusAdicionarVar.get()
         nota = self.spinNotaAdicionar.get()
+        epi = self.entryEpiAdicionar.get()
+        temp = self.entryTempAdicionar.get()
 
-
-        self.controller.salvar_novo_filme(tipo, nome, genero, ano, streaming, status, nota)
+        self.controller.verificar_salvar(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
+        # self.controller.salvar_novo_titulo(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
 
     def showVerificaoErro(self, mensagem):
         mensagem_aviso = mensagem

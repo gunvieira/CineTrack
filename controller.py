@@ -1,6 +1,10 @@
 from model import Model
 
 class Controller:
+#-------------------arrumar tk raise--------------------------
+
+
+
     def __init__(self, cursor, conexao):
         self.model = Model(cursor, conexao)
         self.view = None
@@ -48,65 +52,37 @@ class Controller:
         except Exception as err:
             print(f"Erro no Controller: {err}")
 
+    def cadastrar_filme_serie(self, tipo):
+        pass
+
+    def salvar_novo_titulo(self, tipo, nome, genero, ano, streaming, status, nota, epi, temp):
 
 
-    def salvar_novo_filme(self, tipo, nome, genero, ano, streaming, status, nota):
+       pass
 
-        tipo_filme = tipo
-        nome_filme = nome
-        genero_filme = genero
-        ano_filme = ano
-        streaming_filme = streaming
-        status_filme = status
-        nota_filme = nota
-
+    def verificar_salvar(self, tipo, nome, genero, ano, streaming, status, nota, epi, temp):
         try:
-
-            if nome_filme == "":
-                raise ValueError("\nPreencha o nome do título")
-
+            self.model.check(nome, ano, nota, status)
         except ValueError as e:
-            self.view.showVerificaoErro(f"Erro no campo Título: {e}")
-            return
-
-        try:
-            ano_limpo = ano_filme.strip()
-
-            if any(x.isdigit() == False for x in ano_limpo):
-                raise ValueError("\nO ano deve conter somente números.")
-
-            if len(ano_limpo) != 4:
-                raise ValueError("\nO ano deve ter exatamente 4 dígitos.")
-
-            ano_int = int(ano_limpo)
-
-        except ValueError as e:
-            self.view.showVerificaoErro(f"Erro no campo Ano: {e}")
-            return
-
-        nota_final = None
-        if nota_filme.strip():
-            nota_final = float(nota_filme)
-
-        if status_filme != 'Concluído':
-            nota_final = None
-
-
-        novo_id = self.model.salvar_bd_filme(
-            tipo_filme,
-            nome_filme,
-            genero_filme,
-            ano_filme,
-            streaming_filme,
-            status_filme,
-            nota_filme
-        )
+            print("Validação falhou. Mostrando erro na view.")
+            self.view.showVerificaoErro(str(e))
+        else:
+           notaNova = self.model.alterar_nota(nota, status)
+           novo_id = self.model.salvar_bd(
+               tipo,
+               nome,
+               genero,
+               ano,
+               streaming,
+               status,
+               notaNova,
+               epi,
+               temp
+           )
 
         if novo_id is not None:
             print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
-            if self.view:
-                self.view.showVerificaoSucesso("Título salvo com sucesso!")
+            self.view.showVerificaoSucesso("Título salvo com sucesso!")
         else:
             print("Controller: Model informou uma falha na inserção.")
-            if self.view:
-                self.view.showVerificaoErro("Não foi possível salvar o título.")
+            self.view.showVerificaoErro("Não foi possível salvar o título.")
