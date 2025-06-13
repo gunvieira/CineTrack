@@ -52,14 +52,6 @@ class Controller:
         except Exception as err:
             print(f"Erro no Controller: {err}")
 
-    def cadastrar_filme_serie(self, tipo):
-        pass
-
-    def salvar_novo_titulo(self, tipo, nome, genero, ano, streaming, status, nota, epi, temp):
-
-
-       pass
-
     def verificar_salvar(self, tipo, nome, genero, ano, streaming, status, nota, epi, temp):
         try:
             self.model.check(nome, ano, nota, status)
@@ -67,22 +59,12 @@ class Controller:
             print("Validação falhou. Mostrando erro na view.")
             self.view.showVerificaoErro(str(e))
         else:
-           notaNova = self.model.alterar_nota(nota, status)
-           novo_id = self.model.salvar_bd(
-               tipo,
-               nome,
-               genero,
-               ano,
-               streaming,
-               status,
-               notaNova,
-               epi,
-               temp
-           )
+            notaNova = self.model.alterar_nota(nota, status)
+            novo_id = self.model.salvar_bd(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
 
-        if novo_id is not None:
-            print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
-            self.view.showVerificaoSucesso("Título salvo com sucesso!")
-        else:
-            print("Controller: Model informou uma falha na inserção.")
-            self.view.showVerificaoErro("Não foi possível salvar o título.")
+            if novo_id is not None:
+                print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
+                self.view.showVerificaoSucesso("Título salvo com sucesso!")
+            else:
+                print("Controller: Model informou uma falha na inserção.")
+                self.view.showVerificaoErro("Não foi possível salvar o título.")
