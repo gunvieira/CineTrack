@@ -2,21 +2,13 @@ import customtkinter as ctk
 import tkinter as tk
 from tkinter import messagebox, ttk
 
-
-
-
 class View:
-
-
     def __init__(self, controller):
         self.controller = controller
 
-        ctk.set_appearance_mode("Light")  # Opções: "Dark", "Light", "System"
-        ctk.set_default_color_theme("blue")  # Você pode mudar o tema aqui
+        ctk.set_appearance_mode("Light")
+        ctk.set_default_color_theme("blue")
         self.root = ctk.CTk()
-
-
-
 
         self.root.title("Cine Track")
 
@@ -43,19 +35,13 @@ class View:
 
         self.showTelamenu()
 
-
-
-
-
     def showTelamenu(self):
-
         self.frameMenu.tkraise()
         self.root.geometry("450x500")
 
     #---------tela Adicionar------------------
 
     def showTelaAdicionarSerieConcluido(self):
-
         self.frameAdicionar.tkraise()
         self.frameTempEpi.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStremingAno)
         self.frameNota.pack(anchor="w", fill="x", pady=(5, 10), after=self.frameStatus)
@@ -87,6 +73,8 @@ class View:
         self.frameTempEpiAtualizar.forget()
 
         self.root.geometry("400x330")
+        self.carregar_dados_atualizacao()
+        self.comboSerie.update()
 
     def showTelaAtualizarFilmeConcluido(self):
         self.frameAtualizar.tkraise()
@@ -94,6 +82,8 @@ class View:
         self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
 
         self.root.geometry("400x380")
+        self.carregar_dados_atualizacao()
+        self.comboSerie.update()
 
     def showTelaAtualizarSerie(self):
         self.frameAtualizar.tkraise()
@@ -101,6 +91,8 @@ class View:
         self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
 
         self.root.geometry("400x370")
+        self.carregar_dados_atualizacao()
+        self.comboSerie.update()
 
     def showTelaAtualizarSerieConcluido(self):
         self.frameAtualizar.tkraise()
@@ -108,6 +100,8 @@ class View:
         self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
 
         self.root.geometry("400x415")
+        self.carregar_dados_atualizacao()
+        self.comboSerie.update()
 
     # ---------tela visão geral------------------
 
@@ -115,7 +109,6 @@ class View:
 
         self.frameVisaoGeral.tkraise()
         self.root.geometry("965x570")
-
 
     # ---------------Menu--------------------
 
@@ -152,7 +145,7 @@ class View:
                                       fg_color="grey",
                                       hover_color="#9A9A9A",
                                       cursor="hand2",
-                                      command=self.showTelaAdicionarFilme)
+                                      command=self.chamarAdicionar)
         btnNovoTitulo.pack(pady=10)
 
         btnAtualize = ctk.CTkButton(self.frameBotoesMenu,
@@ -164,7 +157,7 @@ class View:
                                       fg_color="grey",
                                       hover_color="#9A9A9A",
                                       cursor="hand2",
-                                      command=self.showTelaAtualizarFilme)
+                                      command=self.chamarAtualizar)
         btnAtualize.pack(pady=10)
 
         btnGeral = ctk.CTkButton(self.frameBotoesMenu,
@@ -176,7 +169,7 @@ class View:
                                       fg_color="grey",
                                       hover_color="#9A9A9A",
                                       cursor="hand2",
-                                      command=self.showTelaVisaoGeral)
+                                      command=self.chamarVisaoGeral)
         btnGeral.pack(pady=10)
 
     def citacao(self):
@@ -344,11 +337,10 @@ class View:
                                            width=130,
                                            height=30)
         self.comboboxStreamingAdicionar.pack()
-        self.comboboxStreamingAdicionar.set(streamings[0])
 
     def tempEpiAdicionar(self):
         self.frameTempEpi = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
-        self.frameTempEpi
+
 
         frameTemp = ctk.CTkFrame(self.frameTempEpi, fg_color="transparent")
         frameTemp.pack(side="left")
@@ -470,7 +462,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=self.showTelamenu)
+                                  command=self.chamarMenu)
         btnVoltar.pack(side="left", padx=(0, 10))
 
         btnLimpar = ctk.CTkButton(frameBotoesAdicionar,
@@ -494,14 +486,17 @@ class View:
 # ---------------Atualizar Título--------------------
 
     def telaAtualizar(self):
+
         self.tituloAtualizar()
         self.tipoAtualizar()
+        self.carregar_dados_atualizacao()
         self.selecaoSerieAtualizar()
         self.selecaoTempEpisAtualizar()
         self.statusAtualizar()
         self.notaAtualizar()
 
         self.botoesAtualizar()
+
 
     def tituloAtualizar(self):
         frameTitulo = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
@@ -562,10 +557,10 @@ class View:
                              font=ctk.CTkFont("Inter", 16))
         label.pack(anchor="w")
 
-        self.seriesDisponiveis = ["Dark", "Wandinha", "Black Mirror"]
+
 
         self.comboSerie = ctk.CTkOptionMenu(self.frameSerieAtualizarCombo,
-                                                values=self.seriesDisponiveis,
+                                                values=self.todosTitulos,
                                                 dropdown_font=ctk.CTkFont("Inter", 12),
                                                 font=ctk.CTkFont("Inter", 12, weight="bold"),
                                                 fg_color="grey",
@@ -586,7 +581,7 @@ class View:
         labelTemp.pack(side="left", padx=(0, 2))
 
         self.tempAtualizarVar = tk.IntVar(value=1)
-        self.qtdTempAtualizar = 3
+
 
         spinTemp = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
@@ -606,7 +601,7 @@ class View:
         labelEpi.pack(side="left", padx=(10, 2))
 
         self.epiAtualizarVar = tk.IntVar(value=1)
-        self.qtdEpiAtualizar = 12
+
 
         spin_epi = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
@@ -697,7 +692,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=self.showTelamenu)
+                                  command=self.chamarMenu)
         btnVoltar.pack(side="left", padx=5)
 
         btnLimpar = ctk.CTkButton(frameBotoes,
@@ -983,7 +978,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=self.showTelamenu)
+                                  command=self.chamarMenu)
         btnVoltar.pack(side="left", padx=(0, 10))
 
         btnLimpar = ctk.CTkButton(frameBotoesAtualizar,
@@ -1005,12 +1000,26 @@ class View:
         btnSalvar.pack(side="left")
 
 # ---------------Funçoes--------------------
+    def chamarMenu(self):
+        self.controller.tela_menu()
+
+    def chamarAdicionar(self):
+        tipo = "Filme"
+        status = "Quero Assistir"
+        self.controller.tela_tipo_status_adicionar(tipo, status)
+
+    def chamarAtualizar(self):
+        tipo = "Filme"
+        status = "Asistindo"
+        self.controller.tela_tipo_status_atualizar(tipo, status)
+
+    def chamarVisaoGeral(self):
+        self.controller.tela_visaoGeral()
 
     def mudar_tipo_status_tela_adicionar(self):
         tipo = self.tipoAdicionarVar.get()
         status = self.statusAdicionarVar.get()
         self.controller.tela_tipo_status_adicionar(tipo, status)
-
 
     def mudar_tipo_status_tela_atualizar(self):
         tipo = self.tipoAtualizarVariavel.get()
@@ -1029,17 +1038,25 @@ class View:
         temp = self.entryTempAdicionar.get()
 
         self.controller.verificar_salvar(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
-        # self.controller.salvar_novo_titulo(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
 
     def showVerificaoErro(self, mensagem):
         mensagem_aviso = mensagem
-
         messagebox.showwarning('CineTrack', mensagem_aviso)
 
     def showVerificaoSucesso(self, mensagem):
         mensagem_sucesso = mensagem
-
         messagebox.showinfo('CineTrack', mensagem_sucesso)
+
+    def carregar_dados_atualizacao(self):
+        tipo = self.tipoAtualizarVariavel.get()
+        titulos, qtd_epi, qtd_temp = self.controller.selecionar_titulos(tipo)
+
+        self.todosTitulos = titulos
+        self.qtdEpiAtualizar = qtd_epi or 1
+        self.qtdTempAtualizar = qtd_temp or 1
+
+
+
 
 
 
