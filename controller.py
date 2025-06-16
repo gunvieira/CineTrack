@@ -75,11 +75,31 @@ class Controller:
         try:
             if tipo == 'Filme':
                 titulos = self.model.selecionar_filmes()
-                return titulos, None, None
+                return titulos
             else:
-                titulos, epi, temp = self.model.selecionar_series()
-                return titulos, epi, temp
+                titulos = self.model.selecionar_series()
+                return titulos
 
         except Exception as e:
             self.view.showVerificaoErro(f"Erro ao selecionar títulos: {e}")
-            return [], None, None
+            return []
+
+    def obter_epitemp_serie(self, titulo):
+        print(f"Controller: Buscando detalhes para a série '{titulo}'...")
+        detalhes = self.model.buscar_detalhes_serie(titulo)
+        return detalhes
+
+    def atualizar_dados(self, tipo, nome, status, nota, epi, temp):
+        try:
+            notaNova = self.model.alterar_nota(nota, status)
+            novo_atual = self.model.atualizar_bd(tipo, nome, status, notaNova, epi, temp)
+        except ValueError as e:
+            print("Atualização falhou. Mostrando erro na view.")
+            self.view.showVerificaoErro(str(e))
+
+            if novo_atual is not None:
+                print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
+                self.view.showVerificaoSucesso("Título atualizado com sucesso!")
+            else:
+                print("Controller: Model informou uma falha na inserção.")
+                self.view.showVerificaoErro("Não foi possível atualizar o título.")

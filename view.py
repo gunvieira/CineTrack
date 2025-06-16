@@ -74,34 +74,36 @@ class View:
 
         self.root.geometry("400x330")
         self.carregar_dados_atualizacao()
-        self.comboSerie.update()
 
     def showTelaAtualizarFilmeConcluido(self):
+        self.carregar_dados_atualizacao()
         self.frameAtualizar.tkraise()
         self.frameTempEpiAtualizar.forget()
         self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
 
         self.root.geometry("400x380")
-        self.carregar_dados_atualizacao()
-        self.comboSerie.update()
+
 
     def showTelaAtualizarSerie(self):
         self.frameAtualizar.tkraise()
-        self.frameNotaAtualizar.forget()
-        self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
 
-        self.root.geometry("400x370")
-        self.carregar_dados_atualizacao()
-        self.comboSerie.update()
-
-    def showTelaAtualizarSerieConcluido(self):
-        self.frameAtualizar.tkraise()
         self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
         self.frameNotaAtualizar.pack(anchor="w", fill="x", pady=(10, 10), after=self.frameStatusAtualizar)
 
         self.root.geometry("400x415")
         self.carregar_dados_atualizacao()
-        self.comboSerie.update()
+
+
+    def showTelaAtualizarSerieConcluido(self):
+        self.carregar_dados_atualizacao()
+        self.frameAtualizar.tkraise()
+        self.frameNotaAtualizar.forget()
+        self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
+
+
+        self.root.geometry("400x370")
+
+
 
     # ---------tela visão geral------------------
 
@@ -560,7 +562,8 @@ class View:
 
 
         self.comboSerie = ctk.CTkOptionMenu(self.frameSerieAtualizarCombo,
-                                                values=self.todosTitulos,
+                                                values=["Carregando..."],
+                                                command=self.atualizar_temp_epi,
                                                 dropdown_font=ctk.CTkFont("Inter", 12),
                                                 font=ctk.CTkFont("Inter", 12, weight="bold"),
                                                 fg_color="grey",
@@ -583,9 +586,9 @@ class View:
         self.tempAtualizarVar = tk.IntVar(value=1)
 
 
-        spinTemp = tk.Spinbox(self.frameTempEpiAtualizar,
+        self.spinTemp = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
-                              to=self.qtdTempAtualizar,
+                              to=1,
                               textvariable=self.tempAtualizarVar,
                               width=2,
                               fg="black",
@@ -593,7 +596,7 @@ class View:
                               font=("Inter", 12),
                               justify="center",
                               relief="groove")
-        spinTemp.pack(side="left")
+        self.spinTemp.pack(side="left")
 
         labelEpi = ctk.CTkLabel(self.frameTempEpiAtualizar,
                                 text="Episódio:",
@@ -603,9 +606,9 @@ class View:
         self.epiAtualizarVar = tk.IntVar(value=1)
 
 
-        spin_epi = tk.Spinbox(self.frameTempEpiAtualizar,
+        self.spin_epi = tk.Spinbox(self.frameTempEpiAtualizar,
                               from_=1,
-                              to=self.qtdEpiAtualizar,
+                              to=1,
                               textvariable=self.epiAtualizarVar,
                               width=2,
                               fg="black",
@@ -613,7 +616,7 @@ class View:
                               font=("Inter", 12),
                               justify="center",
                               relief="groove")
-        spin_epi.pack(side="left")
+        self.spin_epi.pack(side="left")
 
     def notaAtualizar(self):
         self.frameNotaAtualizar = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
@@ -719,7 +722,7 @@ class View:
                                      fg_color="#414141",
                                      hover_color="#5B5B5B",
                                      font=ctk.CTkFont("Inter", 16),
-                                     command=lambda: messagebox.showinfo("CineTrack", "O título foi Atualizado."))
+                                     command=self.atualizar_titulo)
         btnAtualizar.pack(side="left", padx=5)
 
 # ---------------Visão Geral--------------------
@@ -1049,11 +1052,39 @@ class View:
 
     def carregar_dados_atualizacao(self):
         tipo = self.tipoAtualizarVariavel.get()
-        titulos, qtd_epi, qtd_temp = self.controller.selecionar_titulos(tipo)
+        titulos = [""] + self.controller.selecionar_titulos(tipo)
 
-        self.todosTitulos = titulos
-        self.qtdEpiAtualizar = qtd_epi or 1
-        self.qtdTempAtualizar = qtd_temp or 1
+        self.todosTitulos = titulos if titulos else ["Nenhum título cadastrado"]
+
+        if hasattr(self, 'comboSerie'):
+            valor_selecionado_antes = self.comboSerie.get()
+            self.comboSerie.configure(values=self.todosTitulos)
+
+            if valor_selecionado_antes in self.todosTitulos:
+                self.comboSerie.set(valor_selecionado_antes)
+            else:
+                self.comboSerie.set(self.todosTitulos[0])
+
+    def atualizar_temp_epi(self, titulo_selecionado):
+        qtd_temp, qtd_epi = self.controller.obter_epitemp_serie(titulo_selecionado)
+
+        self.spinTemp.config(to=qtd_temp or 1)
+        self.spin_epi.config(to=qtd_epi or 1)
+
+        self.tempAtualizarVar.set(1)
+        self.epiAtualizarVar.set(1)
+
+    def atualizar_titulo(self):
+        tipo = self.tipoAdicionarVar.get()
+        nome = self.entryNome.get()
+        status = self.statusAdicionarVar.get()
+        nota = self.spinNotaAdicionar.get()
+        epi = self.entryEpiAdicionar.get()
+        temp = self.entryTempAdicionar.get()
+
+        self.controller.atualizar_dados(tipo, nome, status, nota, epi, temp)
+
+
 
 
 

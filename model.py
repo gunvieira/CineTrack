@@ -5,7 +5,7 @@ class BancoDados:
     def __init__(self):
         self.host = "127.0.0.1"
         self.user = "root"
-        self.passwd = "7654321"
+        self.passwd = ""
         self.database = "CineTrack"
         self.connection = None
         self.cursor = None
@@ -198,12 +198,9 @@ class Model:
 
     def selecionar_filmes(self):
         try:
-
-            query = "SELECT nome FROM titulos WHERE tipo = 'Filme'"
-
+            query = "SELECT nome FROM titulos WHERE tipo = 'Filme' and status != 'Concluído'"
 
             self.cursor.execute(query)
-
 
             resultados_dict = self.cursor.fetchall()
 
@@ -216,8 +213,141 @@ class Model:
             return []
 
     def selecionar_series(self):
-        titulos = ["teste", "oi"]
-        epi = 2
-        temp = 3
-        return titulos, epi, temp
+        try:
+            query = "SELECT nome FROM titulos WHERE tipo = 'Série' and status != 'Concluído'"
+
+            self.cursor.execute(query)
+
+            resultados_dict = self.cursor.fetchall()
+
+            nomes_series = [item['nome'] for item in resultados_dict]
+
+            print(f"Sucesso: {len(nomes_series)} series encontrados.")
+            return nomes_series
+
+        except mysql.connector.Error as err:
+            return []
+
+    def buscar_detalhes_serie(self, titulo):
+
+        try:
+            query = """
+                SELECT s.total_temporadas, s.episodios_por_temporada
+                FROM series s
+                JOIN titulos t ON s.id_serie = t.id_titulo
+                WHERE t.nome = %s AND t.tipo = 'Série'
+            """
+
+            self.cursor.execute(query, (titulo,))
+            resultado = self.cursor.fetchone()
+
+            if resultado:
+                total_temporadas = resultado['total_temporadas']
+                episodios_por_temporada = resultado['episodios_por_temporada']
+                return (total_temporadas, episodios_por_temporada)
+            else:
+                return (1, 1)
+
+        except (mysql.connector.Error, KeyError) as err:
+            print(f"Erro no Model ao buscar detalhes da série: {err}")
+            return (1, 1)
+
+    def atualizar_bd(self, tipo, nome, genero, ano, streaming, status, nota, epi, temp):
+        if tipo == "Filme":
+            id = self.atualizar_filme(nome, status, nota)
+        else:
+            id = self.atualizar_serie(nome, status, nota, epi, temp)
+        return id
+
+    def atualizar_filme(self, nome_filme, novo_status, nova_nota=None):
+        """
+        Atualiza o status e, opcionalmente, a nota de um filme.
+
+        Args:
+            nome_filme (str): O nome do filme a ser atualizado.
+            novo_status (str): O novo status ('Assistindo' or 'Concluído').
+            nova_nota (int, optional): A nota do filme. Obrigatória se o status
+                                       for 'Concluído'. Defaults to None.
+
+        Returns:
+            bool: Retorna True se a atualização for bem-sucedida, None caso contrário.
+        """
+
+        try:
+            query = "UPDATE titulos SET status = %s, nota = %s WHERE nome = %s AND tipo = 'Filme'"
+            dados = (novo_status, nova_nota, nome_filme)
+            self.cursor.execute(query, dados)
+
+            if self.cursor.rowcount == 0:
+                print(f"Falha: Filme '{nome_filme}' não encontrado no banco de dados.")
+                self.conexao.rollback()
+                return None
+
+            self.conexao.commit()
+            print(
+                f"Sucesso: Filme '{nome_filme}' atualizado para Status: {novo_status}, Nota: {nova_nota if nova_nota is not None else 'N/A'}.")
+            return True
+
+        except mysql.connector.Error as err:
+            print(f"Falha ao atualizar filme: {err}")
+            self.conexao.rollback()
+            return None
+
+    def atualizar_serie(self, nome_serie, novo_status, numero_temporada=None, numero_episodio=None, nova_nota=None):
+        """
+        Atualiza o status de uma série. Se o status for 'Assistindo', também
+        atualiza a nota de um episódio específico.
+
+        Args:
+            nome_serie (str): O nome da série.
+            novo_status (str): O novo status ('Assistindo' ou 'Concluído').
+            numero_temporada (int, optional): Necessário se o status for 'Assistindo'.
+            numero_episodio (int, optional): Necessário se o status for 'Assistindo'.
+            nova_nota (int, optional): Necessário se o status for 'Assistindo'.
+
+        Returns:
+            bool: Retorna True se a atualização for bem-sucedida, None caso contrário.
+        """
+
+        try:
+            query_status = "UPDATE titulos SET status = %s WHERE nome = %s AND tipo = 'Série'"
+            self.cursor.execute(query_status, (novo_status, nome_serie))
+
+            if self.cursor.rowcount == 0:
+                print(f"Falha: Série '{nome_serie}' não encontrada.")
+                self.conexao.rollback()
+                return None
+
+            if novo_status == 'Assistindo':
+
+                # Query para atualizar a nota do episódio específico
+                query_episodio = """
+                       UPDATE episodios e
+                       JOIN temporadas t ON e.id_temporada = t.id_temporada
+                       JOIN series s ON t.id_serie = s.id_serie
+                       JOIN titulos ti ON s.id_serie = ti.id_titulo
+                       SET e.nota_episodio = %s
+                       WHERE ti.nome = %s AND t.numero_temporada = %s AND e.numero_do_episodio_temporada = %s
+                   """
+                dados_episodio = (nova_nota, nome_serie, numero_temporada, numero_episodio)
+                self.cursor.execute(query_episodio, dados_episodio)
+
+                if self.cursor.rowcount == 0:
+                    print(f"Falha: Episódio não encontrado para '{nome_serie}' T{numero_temporada}E{numero_episodio}.")
+                    self.conexao.rollback()
+                    return None
+
+                print(
+                    f"Sucesso: Status da série '{nome_serie}' atualizado para '{novo_status}' e nota do T{numero_temporada}E{numero_episodio} atualizada para {nova_nota}.")
+
+            else:
+                print(f"Sucesso: Status da série '{nome_serie}' atualizado para 'Concluído'.")
+            self.conexao.commit()
+            return True
+
+        except mysql.connector.Error as err:
+            print(f"Falha ao atualizar série: {err}")
+            self.conexao.rollback()
+            return None
+
 
