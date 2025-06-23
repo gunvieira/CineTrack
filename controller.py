@@ -58,17 +58,14 @@ class Controller:
         try:
             self.model.check(tipo, nome, ano, epi, temp)
         except ValueError as e:
-            print("Validação falhou. Mostrando erro na view.")
             self.view.showVerificaoErro(str(e))
         else:
             notaNova = self.model.alterar_nota(nota, status)
             novo_id = self.model.salvar_bd(tipo, nome, genero, ano, streaming, status, notaNova, epi, temp)
 
             if novo_id is not None:
-                print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
                 self.view.showVerificaoSucesso("Título salvo com sucesso!")
             else:
-                print("Controller: Model informou uma falha na inserção.")
                 self.view.showVerificaoErro("Não foi possível salvar o título.")
 
     def selecionar_titulos(self, tipo):
@@ -80,26 +77,98 @@ class Controller:
                 titulos = self.model.selecionar_series()
                 return titulos
 
-        except Exception as e:
+        except ValueError as e:
             self.view.showVerificaoErro(f"Erro ao selecionar títulos: {e}")
             return []
 
     def obter_epitemp_serie(self, titulo):
-        print(f"Controller: Buscando detalhes para a série '{titulo}'...")
         detalhes = self.model.buscar_detalhes_serie(titulo)
         return detalhes
 
     def atualizar_dados(self, tipo, nome, status, nota, epi, temp):
         try:
-            notaNova = self.model.alterar_nota(nota, status)
-            novo_atual = self.model.atualizar_bd(tipo, nome, status, notaNova, epi, temp)
-        except ValueError as e:
-            print("Atualização falhou. Mostrando erro na view.")
-            self.view.showVerificaoErro(str(e))
+            nota_episodio = None
+            nota_final = None
 
-            if novo_atual is not None:
-                print(f"Controller: Model confirmou a inserção com o ID: {novo_id}.")
+            if status == 'Assistindo' and tipo == 'Série':
+                nota_episodio = nota
+            elif status == 'Concluído':
+                nota_final = self.model.alterar_nota(nota, status)
+
+            novo_atual = self.model.atualizar_bd(
+                tipo=tipo,
+                nome=nome,
+                status=status,
+                nota_final=nota_final,
+                nota_episodio=nota_episodio,
+                epi=epi,
+                temp=temp
+            )
+
+            if novo_atual:
                 self.view.showVerificaoSucesso("Título atualizado com sucesso!")
             else:
-                print("Controller: Model informou uma falha na inserção.")
                 self.view.showVerificaoErro("Não foi possível atualizar o título.")
+
+        except ValueError as e:
+            self.view.showVerificaoErro(str(e))
+
+
+        self.model.adicionar_media_nota_episodios(nome)
+
+    def deletar_dados(self, nome):
+        try:
+            sucesso = self.model.deletar_titulo_por_nome(nome)
+
+            if sucesso:
+                self.view.showVerificaoSucesso(f"O título '{nome}' e todos os seus dados foram deletados com sucesso.")
+            else:
+                self.view.showVerificaoErro(f"Erro: Título '{nome}' não foi encontrado na base de dados.")
+
+        except Exception as e:
+            self.view.showVerificaoErro(f"Ocorreu um erro inesperado ao deletar o título: {e}")
+
+    def buscar_titulos_com_filtros(self, tipo, genero=None, status=None, streaming=None, ordenar_por=None):
+        try:
+            if tipo == 'Filme':
+                resultados = self.model.selecionar_filmes_com_filtros(
+                    genero=genero,
+                    status=status,
+                    streaming=streaming,
+                    ordenar_por=ordenar_por
+                )
+
+                return resultados
+
+            elif tipo == 'Série':
+                resultados = self.model.selecionar_series_com_filtros(
+                    genero=genero,
+                    status=status,
+                    streaming=streaming,
+                    ordenar_por=ordenar_por
+                )
+
+                return resultados
+
+            else:
+                self.view.mostrar_erro(f"Tipo de busca inválido")
+                return []
+
+        except Exception as e:
+            self.view.mostrar_erro(f"Ocorreu um erro durante a busca: {e}")
+            return []
+
+    def obter_cabecalhos(self, tipo):
+        return self.model.obter_cabecalhos(tipo)
+
+    def limpar_campos_adicionar(self):
+        self.view.limpa_tela_adicionar()
+
+    def limpar_campos_atualizar(self):
+        self.view.limpa_tela_atualizar()
+
+    def limpar_campos_geral(self):
+        self.view.limpa_tela_geral()
+
+
+

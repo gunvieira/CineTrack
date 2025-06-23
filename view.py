@@ -83,7 +83,6 @@ class View:
 
         self.root.geometry("400x380")
 
-
     def showTelaAtualizarSerie(self):
         self.frameAtualizar.tkraise()
 
@@ -93,22 +92,17 @@ class View:
         self.root.geometry("400x415")
         self.carregar_dados_atualizacao()
 
-
     def showTelaAtualizarSerieConcluido(self):
         self.carregar_dados_atualizacao()
         self.frameAtualizar.tkraise()
         self.frameNotaAtualizar.forget()
         self.frameTempEpiAtualizar.pack(anchor="w", pady=(10, 0), after=self.frameSerieAtualizarCombo)
 
-
         self.root.geometry("400x370")
-
-
 
     # ---------tela visão geral------------------
 
     def showTelaVisaoGeral(self):
-
         self.frameVisaoGeral.tkraise()
         self.root.geometry("965x570")
 
@@ -188,14 +182,9 @@ class View:
                                          font=ctk.CTkFont("Segoe UI", 12, slant="italic"))
         labelAutorCitacao.pack(anchor='e')
 
-        # ---------------MENU--------------------
-
-        # ---------------Adicionar novo titulo--------------------
-
     # ---------------Adicionar Novo Título--------------------
 
     def telaAdicionar(self):
-
         self.tituloAdicionar()
         self.radioTipoAdicionar()
         self.nomeGeneroAdicionar()
@@ -456,8 +445,6 @@ class View:
         frameBotoesAdicionar = ctk.CTkFrame(self.frameAdicionar, fg_color="transparent")
         frameBotoesAdicionar.pack(anchor="center", pady=(10, 10))
 
-        #trocar hover
-
         btnVoltar = ctk.CTkButton(frameBotoesAdicionar,
                                   text="Voltar",
                                   width=120,
@@ -473,7 +460,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=lambda: print("Salvar"))
+                                  command=self.limpar_adicionar)
         btnLimpar.pack(side="left", padx=(0, 10))
 
         btnSalvar = ctk.CTkButton(frameBotoesAdicionar,
@@ -488,17 +475,14 @@ class View:
 # ---------------Atualizar Título--------------------
 
     def telaAtualizar(self):
-
         self.tituloAtualizar()
         self.tipoAtualizar()
         self.carregar_dados_atualizacao()
-        self.selecaoSerieAtualizar()
+        self.selecaoTituloAtualizar()
         self.selecaoTempEpisAtualizar()
         self.statusAtualizar()
         self.notaAtualizar()
-
         self.botoesAtualizar()
-
 
     def tituloAtualizar(self):
         frameTitulo = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
@@ -550,7 +534,7 @@ class View:
                                          command=self.mudar_tipo_status_tela_atualizar)
         radio_serie.pack(side="left")
 
-    def selecaoSerieAtualizar(self):
+    def selecaoTituloAtualizar(self):
         self.frameSerieAtualizarCombo = ctk.CTkFrame(self.frameAtualizar, fg_color="transparent")
         self.frameSerieAtualizarCombo.pack(anchor="w", pady=(5, 10))
 
@@ -631,16 +615,16 @@ class View:
         self.spinNotaAtulizarVar = tk.IntVar(value=10)
 
         self.spinNotaAtualizar = tk.Spinbox(
-            self.frameNotaAtualizar,
-            from_=1,
-            to=10,
-            textvariable=self.spinNotaAtulizarVar,
-            width=2,
-            fg="black",
-            bg="#AFB4BC",
-            font=("Inter", 12),
-            justify="center",
-            relief="groove")
+                        self.frameNotaAtualizar,
+                        from_=1,
+                        to=10,
+                        textvariable=self.spinNotaAtulizarVar,
+                        width=2,
+                        fg="black",
+                        bg="#AFB4BC",
+                        font=("Inter", 12),
+                        justify="center",
+                        relief="groove")
         self.spinNotaAtualizar.pack(anchor="w")
 
     def statusAtualizar(self):
@@ -704,7 +688,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=lambda: print("Limpar"))
+                                  command=self.limpar_atualizar)
         btnLimpar.pack(side="left", padx=5)
 
         btnDeletar = ctk.CTkButton(frameBotoes,
@@ -713,7 +697,7 @@ class View:
                                    fg_color="#414141",
                                    hover_color="#5B5B5B",
                                    font=ctk.CTkFont("Inter", 16),
-                                   command=lambda: print("Deletar"))
+                                   command=self.excluir_titulo)
         btnDeletar.pack(side="left", padx=5)
 
         btnAtualizar = ctk.CTkButton(frameBotoes,
@@ -752,10 +736,10 @@ class View:
                              font=ctk.CTkFont("Inter", 16))
         label.pack(anchor="w")
 
-        self.tipoAtualizarVar = ctk.StringVar(value="Filme")
+        self.tipoVisaoGeralradio = ctk.StringVar(value="Filme")
 
         radio_filme = ctk.CTkRadioButton(frame_tipo, text="Filme",
-                                         variable=self.tipoAtualizarVar,
+                                         variable=self.tipoVisaoGeralradio,
                                          value="Filme",
                                          font=ctk.CTkFont("Inter", 15),
                                          radiobutton_width=20,
@@ -764,11 +748,12 @@ class View:
                                          border_width_checked=7,
                                          fg_color="#414141",
                                          hover_color="#6F6F83",
-                                         border_color="grey")
+                                         border_color="grey",
+                                         command=self.aplicar_filtros_e_atualizar_tabela)
         radio_filme.pack(side="left", padx=6)
 
         radio_serie = ctk.CTkRadioButton(frame_tipo, text="Série",
-                                         variable=self.tipoAtualizarVar,
+                                         variable=self.tipoVisaoGeralradio,
                                          value="Série",
                                          font=ctk.CTkFont("Inter", 15),
                                          radiobutton_width=20,
@@ -777,17 +762,15 @@ class View:
                                          border_width_checked=7,
                                          fg_color="#414141",
                                          hover_color="#6F6F83",
-                                         border_color="grey")
+                                         border_color="grey",
+                                         command=self.aplicar_filtros_e_atualizar_tabela)
         radio_serie.pack(side="left")
 
     def filtrosSecao(self):
-
         streamings = [""] + self.controller.buscar_todos_os_streamings()
         genero_values = [""] + self.controller.buscar_todos_os_generos()
-
         status_values = ["", "Assistindo", "Concluído", "Quero Assistir"]
-        ordenar_por_values = ["", "Nome (A-Z)", "Nome (Z-A)", "Ano (Recente)", "Ano (Antigo)", "Nota (Maior)",
-                              "Nota (Menor)"]
+        ordenar_por_values = ["", "Título", "Ano", "Nota"]
 
         frameFiltros = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
         frameFiltros.pack(pady=(5, 10))
@@ -861,7 +844,7 @@ class View:
                                    font=ctk.CTkFont("Inter", 16))
         labelOrdenar.pack(anchor="w")
 
-        self.comboboxStatusFiltro = ctk.CTkOptionMenu(frameOrdenar,
+        self.comboboxOrdenarFiltro = ctk.CTkOptionMenu(frameOrdenar,
                                                          values=ordenar_por_values,
                                                          dropdown_font=ctk.CTkFont("Inter", 12),
                                                          font=ctk.CTkFont("Inter", 12, weight="bold"),
@@ -871,7 +854,7 @@ class View:
                                                          dropdown_fg_color="#AFB4BC",
                                                          dropdown_hover_color="grey",
                                                          dropdown_text_color="black")
-        self.comboboxStatusFiltro.pack()
+        self.comboboxOrdenarFiltro.pack()
 
     def criarTabela(self):
         table_frame = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
@@ -890,8 +873,8 @@ class View:
                         font=('Inter', 12, 'bold'),
                         background="#C4C4C4",
                         foreground="black",
-                        borderwidth = 0,
-                        relief = "flat")
+                        borderwidth=0,
+                        relief="flat")
 
         style.map("Treeview.Heading",
                   background=[('active', 'grey')])
@@ -904,76 +887,46 @@ class View:
                   background=[('selected', 'grey')],
                   foreground=[('selected', 'white')])
 
-        tabela = ttk.Treeview(table_frame, columns=[], show='headings')
+        self.tabela = ttk.Treeview(table_frame, columns=[], show='headings')
 
-        tabela.tag_configure('cinza',
+        self.tabela.tag_configure('cinza',
                              background='#EBEBEB',
                              foreground='black')
-        tabela.tag_configure('branco',
+        self.tabela.tag_configure('branco',
                              background='white',
                              foreground='black')
 
-        dados = [
-            ('Stranger Things', 'Netflix', 'Suspense', 'Concluído', 2016, '100%', 4, 34, 9.4),
-            ('Good Girls', 'Netflix', 'Comédia', 'Concluído', 2018, '100%', 4, 50, 9.7),
-            ('Elite', 'Netflix', 'Drama', 'Assistindo', 2018, '84%', 8, 64, '---'),
-            ('Breaking Bad', 'Netflix', 'Drama', 'Concluído', 2008, '100%', 5, 62, 9.5),
-            ('Game of Thrones', 'Max', 'Fantasia', 'Concluído', 2011, '100%', 8, 73, 9.2),
-            ('The Simpsons', 'Disney+', 'Animação', 'Assistindo', 1989, '92%', 36, 780, 8.7),
-            ('Friends', 'Max', 'Comédia', 'Concluído', 1994, '100%', 10, 235, 8.9),
-            ('The Office (US)', 'Prime Video', 'Comédia', 'Concluído', 2005, '100%', 9, 201, 9.0),
-            ('Squid Game', 'Netflix', 'Suspense', 'Assistindo', 2021, '50%', 2, 18, 8.0),
-            ('Wednesday', 'Netflix', 'Comédia', 'Assistindo', 2022, '50%', 2, 16, 8.1),
-            ('Money Heist', 'Netflix', 'Ação', 'Concluído', 2017, '100%', 5, 41, 8.2),
-            ('The Witcher', 'Netflix', 'Fantasia', 'Assistindo', 2019, '60%', 5, 40, 8.1),
-            ('Black Mirror', 'Netflix', 'Ficção Científica', 'Assistindo', 2011, '85%', 7, 33, 8.7),
-            ('The Crown', 'Netflix', 'Drama', 'Concluído', 2016, '100%', 6, 60, 8.7),
-            ('Peaky Blinders', 'Netflix', 'Crime', 'Concluído', 2013, '100%', 6, 36, 8.8),
-            ('Dark', 'Netflix', 'Mistério', 'Concluído', 2017, '100%', 3, 26, 8.7),
-            ('The Mandalorian', 'Disney+', 'Ficção Científica', 'Assistindo', 2019, '75%', 4, 32, 8.7),
-            ('Chernobyl', 'Max', 'Drama Histórico', 'Concluído', 2019, '100%', 1, 5, 9.4),
-            ('The Queen\'s Gambit', 'Netflix', 'Drama', 'Concluído', 2020, '100%', 1, 7, 8.5),
-            ('Ted Lasso', 'Apple TV+', 'Comédia', 'Concluído', 2020, '100%', 3, 34, 8.8),
-            ('Severance', 'Apple TV+', 'Ficção Científica', 'Assistindo', 2022, '50%', 2, 18, 8.7),
-            ('Succession', 'Max', 'Drama', 'Concluído', 2018, '100%', 4, 39, 8.9),
-            ('The Last of Us', 'Max', 'Ação', 'Assistindo', 2023, '50%', 2, 18, 8.8),
-            ('Yellowstone', 'Paramount+', 'Drama', 'Assistindo', 2018, '90%', 5, 53, 8.7),
-            ('House of the Dragon', 'Max', 'Fantasia', 'Assistindo', 2022, '25%', 4, 40, 8.4),
-            ('The Handmaid\'s Tale', 'Star+', 'Drama', 'Assistindo', 2017, '83%', 6, 66, 8.4),
-            ('Rick and Morty', 'Max', 'Animação', 'Assistindo', 2013, '70%', 10, 81, 9.1),
-            ('Ozark', 'Netflix', 'Suspense', 'Concluído', 2017, '100%', 4, 44, 8.5),
-        ]
-        cabecalhos = ["Título", "Streaming", "Gênero", "Status", "Ano", "Progresso", "Temps.", "Eps.", "Media Geral"]
+        dados = []
+        cabecalhos = []
 
-        tabela['columns'] = cabecalhos
+        self.tabela['columns'] = cabecalhos
 
         for col in cabecalhos:
-            tabela.heading(col, text=col)
+            self.tabela.heading(col, text=col)
             if col == "Título":
-                tabela.column(col, anchor=tk.W, width=80)
+                self.tabela.column(col, anchor=tk.W, width=80)
             elif col == "Media Geral":
-                tabela.column(col, anchor=tk.CENTER, width=50)
+                self.tabela.column(col, anchor=tk.CENTER, width=50)
             else:
-                tabela.column(col, anchor=tk.CENTER, width=20)
+                self.tabela.column(col, anchor=tk.CENTER, width=20)
 
         for i, item in enumerate(dados):
             if i % 2 == 0:
-                tabela.insert("", tk.END, values=item, tags=('cinza',))
+                self.tabela.insert("", tk.END, values=item, tags=('cinza',))
             else:
-                tabela.insert("", tk.END, values=item, tags=('branco',))
+                self.tabela.insert("", tk.END, values=item, tags=('branco',))
 
-        scrollbar = ctk.CTkScrollbar(table_frame, command=tabela.yview)
+        scrollbar = ctk.CTkScrollbar(table_frame, command=self.tabela.yview)
         scrollbar.grid(row=0, column=1, sticky="ns")
 
-        tabela.configure(yscrollcommand=scrollbar.set)
+        self.tabela.configure(yscrollcommand=scrollbar.set)
 
-        tabela.grid(row=0, column=0, sticky="nsew")
+        self.tabela.grid(row=0, column=0, sticky="nsew")
+        self.aplicar_filtros_e_atualizar_tabela()
 
     def botoesVisaoGeral(self):
         frameBotoesAtualizar = ctk.CTkFrame(self.frameVisaoGeral, fg_color="transparent")
         frameBotoesAtualizar.pack(anchor="center", pady=(10, 10))
-
-        # trocar hover
 
         btnVoltar = ctk.CTkButton(frameBotoesAtualizar,
                                   text="Voltar",
@@ -990,7 +943,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=lambda: print("Limpar"))
+                                  command=self.limpar_geral)
         btnLimpar.pack(side="left", padx=(0, 10))
 
         btnSalvar = ctk.CTkButton(frameBotoesAtualizar,
@@ -999,7 +952,7 @@ class View:
                                   fg_color="#414141",
                                   hover_color="#5B5B5B",
                                   font=ctk.CTkFont("Inter", 16),
-                                  command=lambda: print("Filtrar"))
+                                  command=self.aplicar_filtros_e_atualizar_tabela)
         btnSalvar.pack(side="left")
 
 # ---------------Funçoes--------------------
@@ -1009,15 +962,19 @@ class View:
     def chamarAdicionar(self):
         tipo = "Filme"
         status = "Quero Assistir"
+        self.limpar_adicionar()
         self.controller.tela_tipo_status_adicionar(tipo, status)
 
     def chamarAtualizar(self):
         tipo = "Filme"
-        status = "Asistindo"
+        status = "Concluído"
+        self.limpar_atualizar()
         self.controller.tela_tipo_status_atualizar(tipo, status)
 
     def chamarVisaoGeral(self):
+        self.limpar_geral()
         self.controller.tela_visaoGeral()
+        self.aplicar_filtros_e_atualizar_tabela()
 
     def mudar_tipo_status_tela_adicionar(self):
         tipo = self.tipoAdicionarVar.get()
@@ -1041,21 +998,36 @@ class View:
         temp = self.entryTempAdicionar.get()
 
         self.controller.verificar_salvar(tipo, nome, genero, ano, streaming, status, nota, epi, temp)
+        self.limpar_adicionar()
+
+    def limpar_adicionar(self):
+        self.controller.limpar_campos_adicionar()
+
+    def limpa_tela_adicionar(self):
+        self.tipoAdicionarVar.set('Filme')
+        self.entryNome.delete(0, 100)
+        self.comboboxGeneroAdicionar.set('')
+        self.entryAno.delete(0, 10)
+        self.comboboxStreamingAdicionar.set('')
+        self.statusAdicionarVar.set('Quero Assistir')
+        self.spinNotaAdicionarVar.set(10)
+        self.entryEpiAdicionar.delete(0, 10)
+        self.entryTempAdicionar.delete(0, 10)
+        self.mudar_tipo_status_tela_adicionar()
 
     def showVerificaoErro(self, mensagem):
-        mensagem_aviso = mensagem
-        messagebox.showwarning('CineTrack', mensagem_aviso)
+        messagebox.showwarning('CineTrack', mensagem)
 
     def showVerificaoSucesso(self, mensagem):
-        mensagem_sucesso = mensagem
-        messagebox.showinfo('CineTrack', mensagem_sucesso)
+        messagebox.showinfo('CineTrack', mensagem)
 
     def carregar_dados_atualizacao(self):
         tipo = self.tipoAtualizarVariavel.get()
         titulos = [""] + self.controller.selecionar_titulos(tipo)
 
-        self.todosTitulos = titulos if titulos else ["Nenhum título cadastrado"]
+        self.todosTitulos = titulos
 
+        #verifica se o campo comboSerie foi carregado
         if hasattr(self, 'comboSerie'):
             valor_selecionado_antes = self.comboSerie.get()
             self.comboSerie.configure(values=self.todosTitulos)
@@ -1075,14 +1047,76 @@ class View:
         self.epiAtualizarVar.set(1)
 
     def atualizar_titulo(self):
-        tipo = self.tipoAdicionarVar.get()
-        nome = self.entryNome.get()
-        status = self.statusAdicionarVar.get()
-        nota = self.spinNotaAdicionar.get()
-        epi = self.entryEpiAdicionar.get()
-        temp = self.entryTempAdicionar.get()
+        tipo = self.tipoAtualizarVariavel.get()
+        nome = self.comboSerie.get()
+        status = self.statusAtualizarVariavel.get()
+        nota = self.spinNotaAtulizarVar.get()
+        epi = self.epiAtualizarVar.get()
+        temp = self.tempAtualizarVar.get()
 
         self.controller.atualizar_dados(tipo, nome, status, nota, epi, temp)
+        self.limpar_atualizar()
+
+    def limpar_atualizar(self):
+        self.controller.limpar_campos_atualizar()
+
+    def limpa_tela_atualizar(self):
+        self.tipoAtualizarVariavel.set('Filme')
+        self.comboSerie.set('')
+        self.statusAtualizarVariavel.set('Concluído')
+        self.spinNotaAtulizarVar.set(10)
+        self.mudar_tipo_status_tela_atualizar()
+
+    def excluir_titulo(self):
+        nome = self.comboSerie.get()
+        self.controller.deletar_dados(nome)
+        self.limpar_atualizar()
+
+    def aplicar_filtros_e_atualizar_tabela(self):
+        tipo = self.tipoVisaoGeralradio.get()
+        genero = self.comboboxGeneroFiltro.get()
+        status = self.comboboxStatusFiltro.get()
+        streaming = self.comboboxStreamingFiltro.get()
+        ordenar_por = self.comboboxOrdenarFiltro.get()
+
+        dados = self.controller.buscar_titulos_com_filtros(tipo, genero, status, streaming, ordenar_por)
+        self.atualizar_tabela_completa(dados)
+
+    def atualizar_tabela_completa(self, dados):
+        tipo = self.tipoVisaoGeralradio.get()
+
+        self.tabela.delete(*self.tabela.get_children())  #remove todas as linhas de dados
+        self.tabela['columns'] = ()  #remove a configuração das colunas
+
+        cabecalhos = self.controller.obter_cabecalhos(tipo)
+        self.tabela['columns'] = cabecalhos
+
+        # configura cabeçalhos
+        for col in cabecalhos:
+            self.tabela.heading(col, text=col)
+            if col == "Título":
+                self.tabela.column(col, anchor=tk.W, width=80)
+            elif col == "Media Geral":
+                self.tabela.column(col, anchor=tk.CENTER, width=50)
+            else:
+                self.tabela.column(col, anchor=tk.CENTER, width=20)
+
+        # insere os novos dados na tabela
+        for i, item in enumerate(dados):
+            if i % 2 == 0:
+                self.tabela.insert("", tk.END, values=item, tags=('cinza',))
+            else:
+                self.tabela.insert("", tk.END, values=item, tags=('branco',))
+
+    def limpar_geral(self):
+        self.controller.limpar_campos_geral()
+
+    def limpa_tela_geral(self):
+        self.comboboxGeneroFiltro.set('')
+        self.comboboxStatusFiltro.set('')
+        self.comboboxStreamingFiltro.set('')
+        self.comboboxOrdenarFiltro.set('')
+
 
 
 

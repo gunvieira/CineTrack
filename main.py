@@ -1,11 +1,9 @@
-
 from model import BancoDados
 from controller import Controller
 from view import View
 
-
 def main():
-    # Iniciar e conectar o banco de dados
+    # Inicia e conecta o banco de dados
     db = BancoDados()
     db.connect()
 
@@ -20,9 +18,8 @@ def main():
 
     main_view.root.mainloop()
 
-    # Fechar a conexão com o banco de dados ao sair
+    # Fecha a conexão com o banco de dados ao sair
     db.close()
-
 
 if __name__ == "__main__":
     main()
